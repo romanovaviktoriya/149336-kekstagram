@@ -62,15 +62,15 @@
   function renderWizard(wizard) {
     var pictureElement = similarWizardTemplateElement.cloneNode(true);
 
-    pictureElement.querySelector('.gallery-overlay-image').src = wizard.src;
-    pictureElement.querySelector('.picture-likes').style.fill = wizard.likes;
-    pictureElement.querySelector('.picture-comments').style.fill = wizard.comments;
+    pictureElement.querySelector('img').src = wizard.src;
+    pictureElement.querySelector('.picture-likes').textContent = wizard.likes;
+    pictureElement.querySelector('.picture-comments').textContent = wizard.comments;
 
     return pictureElement;
   }
 
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < wizards.length; i++) {
+  for (var i = 0; i < 1; i++) {
     fragment.appendChild(renderWizard(wizards[i]));
   }
   pictureListElement.appendChild(fragment);
