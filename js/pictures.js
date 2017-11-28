@@ -44,12 +44,12 @@
     return text;
   }
 
-  var blockSetupElement = document.querySelector('.gallery-overlay');//сюда
+  var blockSetupElement = document.querySelector('.gallery-overlay');// сюда
   blockSetupElement.classList.remove('hidden');
 
   var pictureListElement = blockSetupElement.querySelector('.gallery-overlay-preview');
 
-  var similarWizardTemplateElement = document.querySelector('#picture-template').content.querySelector('.picture');//отсюда
+  var similarWizardTemplateElement = document.querySelector('#picture-template').content.querySelector('.picture');// отсюда
   var wizards = [];
 
   function getGenerateArray() {
