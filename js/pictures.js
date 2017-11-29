@@ -3,11 +3,6 @@
  */
 'use strict';
 (function () {
-  /* var WIZARD_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
-  var COAT_COLOR = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-  var EYES_COLOR = ['black', 'red', 'blue', 'yellow', 'green'];*/
-
   var URL = []; // от 1 до 25 'photos/1.jpg'
   var LIKES = []; // от 15 до 200
   var COMMENTS = [
@@ -25,55 +20,51 @@
     return rand;
   }
   function getUrlImage() {
-    var urlImage;
-    var urlIndex = getRandomInteger(1, 25);
-    var urlImage = 'photos/' + urlIndex + '.jpg';
-    return urlImage;
+    return 'photos/' + getRandomInteger(1, 25) + '.jpg';
   }
   function getCountLikes() {
-    var countLikes;
-    return countLikes = getRandomInteger(15, 200);
+    return getRandomInteger(15, 200);
   }
   function getGenerateComment() {
     var randomCount;
     randomCount = getRandomInteger(1, 2);
-    for (var i = 0; i <= randomCount; i++) {
-      var text = '';
-      text = COMMENTS[i] + ' ';
+    var text = '';
+    for (var j = 0; j < randomCount; j++) {
+      var indexComment = getRandomInteger(0, 5);
+      text += COMMENTS[indexComment] + ' ';
+      console.log(text);
     }
-    return text;
+    return randomCount;
   }
 
-  var blockSetupElement = document.querySelector('.gallery-overlay');// сюда
-  blockSetupElement.classList.remove('hidden');
+  var blockSliderElement = document.querySelector('.gallery-overlay');// сюда
+  blockSliderElement.classList.remove('hidden');
 
-  var pictureListElement = blockSetupElement.querySelector('.gallery-overlay-preview');
+  var pictureListElement = blockSliderElement.querySelector('.picture');
 
-  var similarWizardTemplateElement = document.querySelector('#picture-template').content.querySelector('.picture');// отсюда
-  var wizards = [];
+  var TemplateElement = document.querySelector('#picture-template').content.querySelector('.picture');// отсюда
+  var objects = [];
 
   function getGenerateArray() {
     for (var i = 0; i < 25; i++) {
-      wizards[i] = {src: getUrlImage(URL), likes: getCountLikes(LIKES), comments: getGenerateComment(COMMENTS)};
+      objects[i] = {src: getUrlImage(), likes: getCountLikes(), comments: getGenerateComment()};
     }
   }
   getGenerateArray();
 
-  function renderWizard(wizard) {
-    var pictureElement = similarWizardTemplateElement.cloneNode(true);
+  function renderPhoto(object) {
+    var pictureElement = TemplateElement.cloneNode(true);
 
-    pictureElement.querySelector('img').src = wizard.src;
-    pictureElement.querySelector('.picture-likes').textContent = wizard.likes;
-    pictureElement.querySelector('.picture-comments').textContent = wizard.comments;
+    pictureElement.querySelector('.gallery-overlay-image').src = object.src;
+    pictureElement.querySelector('.picture-likes').textContent = object.likes;
+    pictureElement.querySelector('.picture-comments').textContent = object.comments;
 
     return pictureElement;
   }
 
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < 1; i++) {
-    fragment.appendChild(renderWizard(wizards[i]));
+    fragment.appendChild(renderPhoto(objects[i]));
   }
   pictureListElement.appendChild(fragment);
-
-  blockSetupElement.querySelector('.setup-similar').classList.remove('hidden');
 })();
