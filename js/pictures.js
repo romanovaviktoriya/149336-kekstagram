@@ -59,7 +59,7 @@
 
     pictureElement.querySelector('img').src = object.src;
     pictureElement.querySelector('.picture-likes').textContent = object.likes;
-    pictureElement.querySelector('.picture-comments').textContent = object.comments.length + '';
+    pictureElement.querySelector('.picture-comments').textContent = object.comments.length;
 
     return pictureElement;
   }
@@ -67,7 +67,7 @@
   function renderMainPhoto(object) {
     galleryOverlayElement.querySelector('img').src = object.src;
     galleryOverlayElement.querySelector('.likes-count').textContent = object.likes;
-    galleryOverlayElement.querySelector('.comments-count').textContent = object.comments.length + '';
+    galleryOverlayElement.querySelector('.comments-count').textContent = object.comments.length;
   }
 
   var fragment = document.createDocumentFragment();
