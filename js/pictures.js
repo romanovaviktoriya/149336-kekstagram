@@ -107,11 +107,6 @@
   var slidersOpenElement = document.querySelectorAll('.picture');
   var sliderClose = galleryOverlayElement.querySelector('.gallery-overlay-close');
 
-  for (var z = 0; z <= slidersOpenElement.length - 1; z++) {
-    // slidersOpenElement[z].tabIndex = z + 1;
-    // slidersOpenElement[z].querySelector('img').tabIndex = -1;
-  }
-
   sliderClose.tabIndex = 0;
 
   function clickHandler(e) {
