@@ -19,8 +19,8 @@
     rand = Math.floor(rand);
     return rand;
   }
-  function getUrlImage() {
-    return 'photos/' + getRandomInteger(1, 25) + '.jpg';
+  function getUrlImage(i) {
+    return 'photos/' + (i + 1) + '.jpg';
   }
   function getCountLikes() {
     return getRandomInteger(15, 200);
@@ -41,17 +41,16 @@
     return [comments, randomCount];
   }
 
-  var galleryOverlayElement = document.querySelector('.gallery-overlay');// сюда
+  var galleryOverlayElement = document.querySelector('.gallery-overlay');
 
   var pictureListElement = document.querySelector('.pictures');
 
-  var templateElement = document.querySelector('#picture-template').content.querySelector('.picture');// отсюда
+  var templateElement = document.querySelector('#picture-template').content.querySelector('.picture');
   var pictures = [];
 
   function getGenerateArray() {
     for (var i = 0; i < 25; i++) {
-      pictures[i] = {src: getUrlImage(), likes: getCountLikes(), comments: generateComments(), index: i};
-      // console.log('вот: ' + pictures[i].src + ',' + pictures[i].likes + ',' + pictures[i].comments[1] + ',' + pictures[i].index);
+      pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments(), index: i};
     }
   }
   getGenerateArray();
@@ -73,8 +72,6 @@
         var reg = pictures[i];
         var result = str.match(reg.src);
         if (result) {
-          console.log('совпадение! Строка - ' + str + ', подстрока - ' + reg.src);
-          console.log('кол-во лайков: ' + pictures[i].likes + ', количество коментов: ' + pictures[i].comments[1]);
           return [pictures[i].comments[1], pictures[i].likes];
         }
       }
@@ -107,12 +104,12 @@
     document.removeEventListener('keydown', onSliderEscPress);
   }
   var slidersOpen = document.querySelectorAll('.picture');
-  // var picturesOpen = document.querySelectorAll('.picture img');
   var sliderClose = galleryOverlayElement.querySelector('.gallery-overlay-close');
   var clickedElement = null;
 
   for (var z = 0; z <= slidersOpen.length - 1; z++) {
-    slidersOpen[z].querySelector('img').tabIndex = 0;
+    slidersOpen[z].tabIndex = 0;
+    slidersOpen[z].querySelector('img').tabIndex = -1;
   }
 
   sliderClose.tabIndex = 0;
@@ -120,13 +117,14 @@
   function clickHandler(e) {
     e.preventDefault();
     clickedElement = e.currentTarget;
-    renderMainPhoto(clickedElement);
+    var el = clickedElement.children[0];
+    renderMainPhoto(el);
     openSlider();
   }
 
   for (var j = 0; j <= slidersOpen.length - 1; j++) {
-    slidersOpen[j].querySelector('img').addEventListener('click', clickHandler, true);
-    slidersOpen[j].addEventListener('click', openSlider, true);
+    slidersOpen[j].addEventListener('click', clickHandler, true);
+    slidersOpen[j].addEventListener('keydown', clickHandler, true);
   }
 
   sliderClose.addEventListener('click', function () {
