@@ -26,7 +26,7 @@
     return getRandomInteger(15, 200);
   }
   function generateComments() {
-    var text = '';
+    var text;
     var comments = [];
     var randomCount = getRandomInteger(1, 10);
 
@@ -38,7 +38,7 @@
       }
       comments.push(text);
     }
-    return [comments, randomCount];
+    return comments// , randomCount];
   }
 
   var galleryOverlayElement = document.querySelector('.gallery-overlay');
@@ -50,7 +50,7 @@
 
   function getGenerateArray() {
     for (var i = 0; i < 25; i++) {
-      pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments(), index: i};
+      pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
     }
   }
   getGenerateArray();
@@ -60,7 +60,7 @@
 
     pictureElement.querySelector('img').src = object.src;
     pictureElement.querySelector('.picture-likes').textContent = object.likes;
-    pictureElement.querySelector('.picture-comments').textContent = object.comments[1];
+    pictureElement.querySelector('.picture-comments').textContent = object.comments.length;
 
     return pictureElement;
   }
@@ -72,13 +72,14 @@
         var reg = pictures[i];
         var result = str.match(reg.src);
         if (result) {
-          return [pictures[i].comments[1], pictures[i].likes];
+          return [pictures[i].comments.length, pictures[i].likes];
         }
       }
     }
+    var matchStr = getMatchStr(object);
     galleryOverlayElement.querySelector('img').src = object.src;
-    galleryOverlayElement.querySelector('.likes-count').textContent = getMatchStr(object)[1];
-    galleryOverlayElement.querySelector('.comments-count').textContent = getMatchStr(object)[0];
+    galleryOverlayElement.querySelector('.likes-count').textContent = matchStr[1];
+    galleryOverlayElement.querySelector('.comments-count').textContent = matchStr[0];
   }
 
   var fragment = document.createDocumentFragment();
@@ -103,28 +104,25 @@
     galleryOverlayElement.classList.add('hidden');
     document.removeEventListener('keydown', onSliderEscPress);
   }
-  var slidersOpen = document.querySelectorAll('.picture');
+  var slidersOpenElement = document.querySelectorAll('.picture');
   var sliderClose = galleryOverlayElement.querySelector('.gallery-overlay-close');
-  var clickedElement = null;
 
-  for (var z = 0; z <= slidersOpen.length - 1; z++) {
-    slidersOpen[z].tabIndex = 0;
-    slidersOpen[z].querySelector('img').tabIndex = -1;
+  for (var z = 0; z <= slidersOpenElement.length - 1; z++) {
+    // slidersOpenElement[z].tabIndex = z + 1;
+    // slidersOpenElement[z].querySelector('img').tabIndex = -1;
   }
 
   sliderClose.tabIndex = 0;
 
   function clickHandler(e) {
     e.preventDefault();
-    clickedElement = e.currentTarget;
-    var el = clickedElement.children[0];
+    var el = e.currentTarget.children[0];
     renderMainPhoto(el);
     openSlider();
   }
 
-  for (var j = 0; j <= slidersOpen.length - 1; j++) {
-    slidersOpen[j].addEventListener('click', clickHandler, true);
-    slidersOpen[j].addEventListener('keydown', clickHandler, true);
+  for (var j = 0; j <= slidersOpenElement.length - 1; j++) {
+    slidersOpenElement[j].addEventListener('click', clickHandler, true);
   }
 
   sliderClose.addEventListener('click', function () {
