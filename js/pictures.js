@@ -89,7 +89,7 @@
   }
   pictureListElement.appendChild(fragment);
 
-  function SliderEscPressHandler(e) {
+  function sliderEscPressHandler(e) {
     if (e.keyCode === ESC_KEYCODE) {
       closeSlider();
     }
@@ -98,12 +98,12 @@
   function openSlider() {
     event.preventDefault();
     galleryOverlayElement.classList.remove('hidden');
-    document.addEventListener('keydown', SliderEscPressHandler);
+    document.addEventListener('keydown', sliderEscPressHandler);
   }
 
   function closeSlider() {
     galleryOverlayElement.classList.add('hidden');
-    document.removeEventListener('keydown', SliderEscPressHandler);
+    document.removeEventListener('keydown', sliderEscPressHandler);
   }
   var slidersOpenElement = document.querySelectorAll('.picture');
   var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
