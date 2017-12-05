@@ -38,7 +38,7 @@
       }
       comments.push(text);
     }
-    return comments// , randomCount];
+    return comments;
   }
 
   var galleryOverlayElement = document.querySelector('.gallery-overlay');
@@ -65,17 +65,18 @@
     return pictureElement;
   }
 
-  function renderMainPhoto(object) {
-    function getMatchStr() {
-      for (var i = 0; i < pictures.length; i++) {
-        var str = object.src;
-        var reg = pictures[i];
-        var result = str.match(reg.src);
-        if (result) {
-          return [pictures[i].comments.length, pictures[i].likes];
-        }
+  function getMatchStr(object) {
+    for (var i = 0; i < pictures.length; i++) {
+      var str = object.src;
+      var reg = pictures[i];
+      var result = str.match(reg.src);
+      if (result) {
+        return [pictures[i].comments.length, pictures[i].likes];
       }
     }
+  }
+
+  function renderMainPhoto(object) {
     var matchStr = getMatchStr(object);
     galleryOverlayElement.querySelector('img').src = object.src;
     galleryOverlayElement.querySelector('.likes-count').textContent = matchStr[1];
@@ -88,7 +89,7 @@
   }
   pictureListElement.appendChild(fragment);
 
-  function onSliderEscPress(e) {
+  function SliderEscPressHandler(e) {
     if (e.keyCode === ESC_KEYCODE) {
       closeSlider();
     }
@@ -97,17 +98,17 @@
   function openSlider() {
     event.preventDefault();
     galleryOverlayElement.classList.remove('hidden');
-    document.addEventListener('keydown', onSliderEscPress);
+    document.addEventListener('keydown', SliderEscPressHandler);
   }
 
   function closeSlider() {
     galleryOverlayElement.classList.add('hidden');
-    document.removeEventListener('keydown', onSliderEscPress);
+    document.removeEventListener('keydown', SliderEscPressHandler);
   }
   var slidersOpenElement = document.querySelectorAll('.picture');
-  var sliderClose = galleryOverlayElement.querySelector('.gallery-overlay-close');
+  var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
 
-  sliderClose.tabIndex = 0;
+  sliderCloseElement.tabIndex = 0;
 
   function clickHandler(e) {
     e.preventDefault();
@@ -120,11 +121,11 @@
     slidersOpenElement[j].addEventListener('click', clickHandler, true);
   }
 
-  sliderClose.addEventListener('click', function () {
+  sliderCloseElement.addEventListener('click', function () {
     closeSlider();
   });
 
-  sliderClose.addEventListener('keydown', function (e) {
+  sliderCloseElement.addEventListener('keydown', function (e) {
     if (e.keyCode === ENTER_KEYCODE) {
       closeSlider();
     }
