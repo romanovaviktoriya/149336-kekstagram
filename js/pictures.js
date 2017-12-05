@@ -13,6 +13,7 @@
   ];
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
+  var PICTURES_COUNT = 25;
 
   function getRandomInteger(min, max) {
     var rand = min + Math.random() * (max + 1 - min);
@@ -48,12 +49,12 @@
   var templateElement = document.querySelector('#picture-template').content.querySelector('.picture');
   var pictures = [];
 
-  function getGenerateArray() {
-    for (var i = 0; i < 25; i++) {
+  function generatePicturesArray() {
+    for (var i = 0; i < PICTURES_COUNT; i++) {
       pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
     }
   }
-  getGenerateArray();
+  generatePicturesArray();
 
   function renderPhoto(object) {
     var pictureElement = templateElement.cloneNode(true);
@@ -83,11 +84,11 @@
     galleryOverlayElement.querySelector('.comments-count').textContent = matchStr[0];
   }
 
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < 25; i++) {
-    fragment.appendChild(renderPhoto(pictures[i]));
+  var fragmentElement = document.createDocumentFragment();
+  for (var i = 0; i < PICTURES_COUNT; i++) {
+    fragmentElement.appendChild(renderPhoto(pictures[i]));
   }
-  pictureListElement.appendChild(fragment);
+  pictureListElement.appendChild(fragmentElement);
 
   function sliderEscPressHandler(e) {
     if (e.keyCode === ESC_KEYCODE) {
