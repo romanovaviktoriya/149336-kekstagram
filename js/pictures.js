@@ -75,6 +75,7 @@
         return [pictures[i].comments.length, pictures[i].likes];
       }
     }
+    return [0, 0];
   }
 
   function renderMainPhoto(object) {
