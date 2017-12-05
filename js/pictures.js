@@ -11,20 +11,23 @@
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+  var PICTURES_COUNT = 25;
 
   function getRandomInteger(min, max) {
     var rand = min + Math.random() * (max + 1 - min);
     rand = Math.floor(rand);
     return rand;
   }
-  function getUrlImage() {
-    return 'photos/' + getRandomInteger(1, 25) + '.jpg';
+  function getUrlImage(i) {
+    return 'photos/' + (i + 1) + '.jpg';
   }
   function getCountLikes() {
     return getRandomInteger(15, 200);
   }
   function generateComments() {
-    var text = '';
+    var text;
     var comments = [];
     var randomCount = getRandomInteger(1, 10);
 
@@ -39,20 +42,19 @@
     return comments;
   }
 
-  var galleryOverlayElement = document.querySelector('.gallery-overlay');// сюда
-  galleryOverlayElement.classList.remove('hidden');
+  var galleryOverlayElement = document.querySelector('.gallery-overlay');
 
   var pictureListElement = document.querySelector('.pictures');
 
-  var templateElement = document.querySelector('#picture-template').content.querySelector('.picture');// отсюда
+  var templateElement = document.querySelector('#picture-template').content.querySelector('.picture');
   var pictures = [];
 
-  function getGenerateArray() {
-    for (var i = 0; i < 25; i++) {
-      pictures[i] = {src: getUrlImage(), likes: getCountLikes(), comments: generateComments()};
+  function generatePicturesArray() {
+    for (var i = 0; i < PICTURES_COUNT; i++) {
+      pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
     }
   }
-  getGenerateArray();
+  generatePicturesArray();
 
   function renderPhoto(object) {
     var pictureElement = templateElement.cloneNode(true);
@@ -64,17 +66,70 @@
     return pictureElement;
   }
 
+  function getMatchStr(object) {
+    for (var i = 0; i < pictures.length; i++) {
+      var str = object.src;
+      var reg = pictures[i];
+      var result = str.match(reg.src);
+      if (result) {
+        return [pictures[i].comments.length, pictures[i].likes];
+      }
+    }
+    return [0, 0];
+  }
+
   function renderMainPhoto(object) {
+    var matchStr = getMatchStr(object);
     galleryOverlayElement.querySelector('img').src = object.src;
-    galleryOverlayElement.querySelector('.likes-count').textContent = object.likes;
-    galleryOverlayElement.querySelector('.comments-count').textContent = object.comments.length;
+    galleryOverlayElement.querySelector('.likes-count').textContent = matchStr[1];
+    galleryOverlayElement.querySelector('.comments-count').textContent = matchStr[0];
   }
 
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < 25; i++) {
-    fragment.appendChild(renderPhoto(pictures[i]));
+  var fragmentElement = document.createDocumentFragment();
+  for (var i = 0; i < PICTURES_COUNT; i++) {
+    fragmentElement.appendChild(renderPhoto(pictures[i]));
   }
-  pictureListElement.appendChild(fragment);
+  pictureListElement.appendChild(fragmentElement);
 
-  renderMainPhoto(pictures[0]);
+  function sliderEscPressHandler(e) {
+    if (e.keyCode === ESC_KEYCODE) {
+      closeSlider();
+    }
+  }
+
+  function openSlider() {
+    event.preventDefault();
+    galleryOverlayElement.classList.remove('hidden');
+    document.addEventListener('keydown', sliderEscPressHandler);
+  }
+
+  function closeSlider() {
+    galleryOverlayElement.classList.add('hidden');
+    document.removeEventListener('keydown', sliderEscPressHandler);
+  }
+  var slidersOpenElement = document.querySelectorAll('.picture');
+  var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
+
+  sliderCloseElement.tabIndex = 0;
+
+  function clickHandler(e) {
+    e.preventDefault();
+    var el = e.currentTarget.children[0];
+    renderMainPhoto(el);
+    openSlider();
+  }
+
+  for (var j = 0; j <= slidersOpenElement.length - 1; j++) {
+    slidersOpenElement[j].addEventListener('click', clickHandler, true);
+  }
+
+  sliderCloseElement.addEventListener('click', function () {
+    closeSlider();
+  });
+
+  sliderCloseElement.addEventListener('keydown', function (e) {
+    if (e.keyCode === ENTER_KEYCODE) {
+      closeSlider();
+    }
+  });
 })();
