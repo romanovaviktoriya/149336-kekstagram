@@ -233,17 +233,16 @@
     changeResizeHandler();
   });
 
-  var hashTags = uploadForm.querySelector('.upload-form-hashtags').textContent;
-  var str = "#todo, #абракадабра #ау #Яма #ау па #маммамамамамамамамамамаамаммааа #a css #js #dwdwd #go #ухуууу! #абракадабра #ау"; // строка
-  //var arrHach = str.match(/(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi);  // распознавание хэш-тега
+  var str = uploadForm.querySelector('.upload-form-hashtags').value;
+  //var str = "#todo, #абракадабра #яМа #ау #Яма #папа  #еду #дом #ау па #маммамамамамамамамамамаамаммааа #a css #js #dwdwd #go #ухуууу! #абракадабра #ау"; // строка
   var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
-  var arrHach = str.match(regexp); //игнор регистра
+  var arrHach = str.toLowerCase().match(regexp); //игнор регистра
   console.log('отобранные тэги: ' +arrHach + ', длина ' + arrHach.length);    //отобранные тэги
   var arr = String(arrHach);
   var names = arr.split(' ');  // var names = arr.split(' ', 5);
 
   // --------- игнорирование регистра
-  console.log('Теги: ' + arrHach);
+
   // ---------
 
   // ------- Unique elements --------
@@ -259,22 +258,8 @@
   }
   var unicHach = unique(arrHach);
   console.log('Уникальные тэги: ' + unicHach);
-// --------------- Object to array (превратить в массив и обрезать до 5 элементов)
-  function objToArray(el, el2, el3, el4, el5){
-    this.el = el;
-    this.el2 = el2;
-    this.el3 = el3;
-    this.el4 = el4;
-    this.el5 = el5;
-  }
 
-  var a = new objToArray(unicHach[0], unicHach[1], unicHach[2], unicHach[3], unicHach[4]);
-
-  var arr = [];
-  for(var index in a) {
-    arr.push(a[index]);
-  }
-  console.log('objToArray: ' + arr);
-// -----------------------
-
+  var itogHach = String(unicHach).split(',', 5);
+  console.log('Не более 5 тегов! ' + itogHach);
+    uploadForm.querySelector('.upload-form-hashtags').value = String(itogHach);
 })();
