@@ -132,4 +132,149 @@
       closeSlider();
     }
   });
+
+  var uploadForm = document.querySelector('#upload-select-image');
+  var uploadFile = uploadForm.querySelector('#upload-file');
+  var uploadCancel = uploadForm.querySelector('#upload-cancel');
+  var focusUploadDescription = uploadForm.querySelector('.upload-form-description');
+
+  uploadFile.addEventListener('change', function () {
+    openUploadForm();
+  });
+
+  uploadCancel.addEventListener('click', function () {
+    closeUploadForm();
+    uploadFile.click();
+  });
+
+  function uploadFormEscPressHandler(e) {
+    if (e.keyCode === ESC_KEYCODE) {
+      closeUploadForm();
+    }
+  }
+
+  function openUploadForm() {
+    uploadForm.querySelector('.upload-overlay').classList.remove('hidden');
+    document.addEventListener('keydown', uploadFormEscPressHandler);
+  }
+
+  function closeUploadForm() {
+    if (focusUploadDescription === document.activeElement) {
+      event.preventDefault();
+    } else {
+      uploadForm.querySelector('.upload-overlay').classList.add('hidden');
+      document.removeEventListener('keydown', uploadFormEscPressHandler);
+    }
+  }
+
+  uploadCancel.addEventListener('keydown', function (e) {
+    if (e.keyCode === ENTER_KEYCODE) {
+      closeUploadForm();
+    }
+  });
+
+  var imagePreview = uploadForm.querySelector('.effect-image-preview');
+  var effectImage = uploadForm.querySelectorAll('.upload-effect-label');
+
+  function addEffectImageHandler() {
+    var str = this.previousElementSibling.id;
+    str = str.substring(7);
+    imagePreview.className = 'effect-image-preview ' + str;
+  }
+
+  for (var j = 0; j <= effectImage.length - 1; j++) {
+    effectImage[j].addEventListener('click', addEffectImageHandler, true);
+  }
+
+  var controlsResizeBtn = uploadForm.querySelector('.upload-resize-controls-button');
+  var decrementBtn = uploadForm.querySelector('.upload-resize-controls-button-dec');
+  var incrementBtn = uploadForm.querySelector('.upload-resize-controls-button-inc');
+
+  function changeResizeHandler() {
+    var inputValue = decrementBtn.nextElementSibling;
+    var transformScale;
+
+    if (inputValue.value <= 25) {
+      if (decrementBtn === document.activeElement) {
+        return;
+      } else {
+        inputValue.value = String(parseInt(inputValue.value, 10) + 25);
+        transformScale = 'scale(' + inputValue.value / 100 + ')';
+        imagePreview.style['transform'] = transformScale;
+      }
+    } else if (inputValue.value > 25) {
+      if (inputValue.value < 100) {
+        if (decrementBtn === document.activeElement) {
+          inputValue.value = String(parseInt(inputValue.value, 10) - 25);
+          transformScale = 'scale(' + inputValue.value / 100 + ')';
+          imagePreview.style['transform'] = transformScale;
+        } else {
+          inputValue.value = String(parseInt(inputValue.value, 10) + 25);
+          transformScale = 'scale(' + inputValue.value / 100 + ')';
+          imagePreview.style['transform'] = transformScale;
+        }
+      } else {
+        if (decrementBtn === document.activeElement) {
+          inputValue.value = String(parseInt(inputValue.value, 10) - 25);
+          transformScale = 'scale(' + inputValue.value / 100 + ')';
+          imagePreview.style['transform'] = transformScale;
+        } else {
+          return;
+        }
+      }
+    }
+  }
+
+  decrementBtn.addEventListener('click', function () {
+    changeResizeHandler();
+  });
+
+  incrementBtn.addEventListener('click', function () {
+    changeResizeHandler();
+  });
+
+  var hashTags = uploadForm.querySelector('.upload-form-hashtags').textContent;
+  var str = "#todo, #абракадабра #ау #Яма #ау па #маммамамамамамамамамамаамаммааа #a css #js #dwdwd #go #ухуууу! #абракадабра #ау"; // строка
+  //var arrHach = str.match(/(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi);  // распознавание хэш-тега
+  var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
+  var arrHach = str.match(regexp); //игнор регистра
+  console.log('отобранные тэги: ' +arrHach + ', длина ' + arrHach.length);    //отобранные тэги
+  var arr = String(arrHach);
+  var names = arr.split(' ');  // var names = arr.split(' ', 5);
+
+  // --------- игнорирование регистра
+  console.log('Теги: ' + arrHach);
+  // ---------
+
+  // ------- Unique elements --------
+  function unique(arr) {
+    var obj = {};
+
+    for (var i = 0; i < arr.length; i++) {
+      var str = arr[i];
+      obj[str] = true; // запомнить строку в виде свойства объекта
+    }
+
+    return Object.keys(obj); // или собрать ключи перебором для IE8-
+  }
+  var unicHach = unique(arrHach);
+  console.log('Уникальные тэги: ' + unicHach);
+// --------------- Object to array (превратить в массив и обрезать до 5 элементов)
+  function objToArray(el, el2, el3, el4, el5){
+    this.el = el;
+    this.el2 = el2;
+    this.el3 = el3;
+    this.el4 = el4;
+    this.el5 = el5;
+  }
+
+  var a = new objToArray(unicHach[0], unicHach[1], unicHach[2], unicHach[3], unicHach[4]);
+
+  var arr = [];
+  for(var index in a) {
+    arr.push(a[index]);
+  }
+  console.log('objToArray: ' + arr);
+// -----------------------
+
 })();
