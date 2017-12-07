@@ -134,17 +134,17 @@
   });
 
   var uploadFormElement = document.querySelector('#upload-select-image');
-  var uploadFile = uploadFormElement.querySelector('#upload-file');
-  var uploadCancel = uploadFormElement.querySelector('#upload-cancel');
-  var focusUploadDescription = uploadFormElement.querySelector('.upload-form-description');
+  var uploadFileElement = uploadFormElement.querySelector('#upload-file');
+  var uploadCancelElement = uploadFormElement.querySelector('#upload-cancel');
+  var focusUploadDescriptionElement = uploadFormElement.querySelector('.upload-form-description');
 
-  uploadFile.addEventListener('change', function () {
+  uploadFileElement.addEventListener('change', function () {
     openUploadForm();
   });
 
-  uploadCancel.addEventListener('click', function () {
+  uploadCancelElement.addEventListener('click', function () {
     closeUploadForm();
-    uploadFile.click();
+    uploadFileElement.click();
   });
 
   function uploadFormEscPressHandler(e) {
@@ -159,7 +159,7 @@
   }
 
   function closeUploadForm() {
-    if (focusUploadDescription === document.activeElement) {
+    if (focusUploadDescriptionElement === document.activeElement) {
       event.preventDefault();
     } else {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
@@ -167,83 +167,55 @@
     }
   }
 
-  uploadCancel.addEventListener('keydown', function (e) {
+  uploadCancelElement.addEventListener('keydown', function (e) {
     if (e.keyCode === ENTER_KEYCODE) {
       closeUploadForm();
     }
   });
 
-  var imagePreview = uploadFormElement.querySelector('.effect-image-preview');
-  var effectImage = uploadFormElement.querySelectorAll('.upload-effect-label');
+  var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
+  var effectImageElement = uploadFormElement.querySelectorAll('.upload-effect-label');
 
   function addEffectImageHandler(event) {
     var str = event.currentTarget.previousElementSibling.id;
     str = str.substring(7);
-    imagePreview.className = 'effect-image-preview ' + str;
+    imagePreviewElement.className = 'effect-image-preview ' + str;
   }
 
-  for (var j = 0; j <= effectImage.length - 1; j++) {
-    effectImage[j].addEventListener('click', addEffectImageHandler, true);
+  for (var j = 0; j <= effectImageElement.length - 1; j++) {
+    effectImageElement[j].addEventListener('click', addEffectImageHandler, true);
   }
 
-  // var controlsResizeBtn = uploadFormElement.querySelector('.upload-resize-controls-button');
-  var decrementBtn = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
-  var incrementBtn = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
-  var inputValue = decrementBtn.nextElementSibling;
+  var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
+  var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
+  var inputValueElement = decrementBtnElement.nextElementSibling;
   var transformScale;
 
-  function zoomIn() {
-    inputValue.value = String(parseInt(inputValue.value, 10) + 25);
-    transformScale = 'scale(' + inputValue.value / 100 + ')';
-    imagePreview.style['transform'] = transformScale;
-
-    return transformScale;
-  }
-
-  function zoomOut() {
-    inputValue.value = String(parseInt(inputValue.value, 10) - 25);
-    transformScale = 'scale(' + inputValue.value / 100 + ')';
-    imagePreview.style['transform'] = transformScale;
-
-    return transformScale;
-  }
-
-  function changeResizeHandler(event) {
-    if (inputValue.value <= 25) {
-      if (decrementBtn === event.target) {
-        return;
-      } else {
-        zoomIn();
-      }
+  function zoomInHandler() {
+    if (inputValueElement.value >= 100) {
+      return;
     } else {
-      if (inputValue.value < 100) {
-        if (decrementBtn === event.target) {
-          zoomOut();
-        } else {
-          zoomIn();
-        }
-      } else {
-        if (decrementBtn === event.target) {
-          zoomOut();
-        } else {
-          return;
-        }
-      }
+      inputValueElement.value = String(parseInt(inputValueElement.value, 10) + 25);
+      transformScale = 'scale(' + inputValueElement.value / 100 + ')';
+      imagePreviewElement.style['transform'] = transformScale;
     }
   }
 
-  decrementBtn.addEventListener('click', function () {
-    changeResizeHandler(event);
-  });
+  function zoomOutHandler() {
+    if (inputValueElement.value <= 25) {
+      return;
+    } else {
+      inputValueElement.value = String(parseInt(inputValueElement.value, 10) - 25);
+      transformScale = 'scale(' + inputValueElement.value / 100 + ')';
+      imagePreviewElement.style['transform'] = transformScale;
+    }
+  }
 
-  incrementBtn.addEventListener('click', function () {
-    changeResizeHandler(event);
-  });
-
-  // --------- игнорирование регистра
+  decrementBtnElement.addEventListener('click', zoomOutHandler);
+  incrementBtnElement.addEventListener('click', zoomInHandler);
 
   // ------- Unique elements --------
-  function isUnique(arr) {
+  function unique(arr) {
     var obj = {};
 
     for (var i = 0; i < arr.length; i++) {
@@ -254,67 +226,44 @@
     return Object.keys(obj);
   }
 
-  // ------- validate form --------
   function validateHashTags(str) {
+    // проверяем количество
     var hashArr = str.split(' ');
-    console.log('Строка : ' + hashArr);
     if (hashArr.length > 5) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
-      return alert('Хэштегов больше 5');
+      return 'Хэштегов больше 5';
     }
 
-    var array = str.split(' ');
-    var arrHach = [];
-    var arrString = [];
-    var a = [];
-    for (var i = 0; i < array.length; i++) {
-      if(array[i].length > 20) {
-        return alert('Длина тега не может превышать 20 символов!');
+    // проверяем чтобы начинался с решетки и имел не более 20 символов
+    var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}$)/gi;
+    for (var i = 0; i < hashArr.length; i++) {
+      if (hashArr[i].match(regexp) === null) {
+        uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
+        return 'Хэштег ' + hashArr[i] + ' невалиден';
       }
-      var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}$)/gi; // регулярка
-      a[i] = array[i].toLowerCase().match(regexp); // игнор регистра
     }
-    function objToArray(el, el2, el3, el4, el5){
-      this.el = el;
-      this.el2 = el2;
-      this.el3 = el3;
-      this.el4 = el4;
-      this.el5 = el5;
-    }
-    a = new objToArray(a[0], a[1], a[2], a[3], a[4]);
-    for(var index in a) {
-      arrHach.push(a[index]);
-      arrString.push(a[index]);
-    }
-    var filterArrHach = arrHach.filter(function(n){ return n != undefined }); // очистка массива от пустых значений
-    var filterArrString = arrString.filter(function(n){ return n != undefined }); // очистка массива от пустых значений
-    console.log('Введеная строка: ' + filterArrString);
-    console.log('отобранные тэги: ' + filterArrHach + ', длина ' + filterArrHach.length);    // отобранные тэги
-    var unicHach = isUnique(filterArrHach);
-    console.log('Уникальные тэги: ' + unicHach  + ', длина ' + unicHach.length);
-    var itogHach = String(String(unicHach).split(',', 5));
 
-    if(String(filterArrString) === String(unicHach)) {
-      console.log('Все теги уникальны. Отлично!' + filterArrHach + ' === ' + unicHach);
-      return null;
-    } else {
-      return alert('Не уникальные тэги! ' + filterArrHach + ' !== ' + unicHach);
+    // проверяем, чтобы массив уникальных тегов по длине соответствовал массиву с исходными тегами
+    var uniqueTags = unique(str.toLowerCase().split(' '));
+    if (uniqueTags.length !== hashArr.length) {
+      uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
+      return 'Среди хэштегов есть дубликаты';
     }
-    console.log('Не более 5 тегов! ' + itogHach + ' ' + typeof(itogHach));
+
+    // Валидация пройдена
     return null;
   }
 
-  var submitBtn = uploadFormElement.querySelector('#upload-submit');
+  var submitBtnElement = uploadFormElement.querySelector('#upload-submit');
 
-  submitBtn.addEventListener('click', function (e) {
-    e.preventDefault();
+  submitBtnElement.addEventListener('click', function (event) {
+    event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
     if (validateHashTags(str) === null) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
       uploadFormElement.submit();
     } else {
       console.log('Форма не отправлена. Есть ошибки');
-      return false;
     }
   });
 })();
