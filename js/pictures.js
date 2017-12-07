@@ -189,12 +189,11 @@
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
   var inputValueElement = decrementBtnElement.nextElementSibling;
-  var transformScale;
 
   function zoomInHandler() {
-    if (inputValueElement.value >= 100) {
-      return;
-    } else {
+    var transformScale;
+
+    if (inputValueElement.value < 100) {
       inputValueElement.value = String(parseInt(inputValueElement.value, 10) + 25);
       transformScale = 'scale(' + inputValueElement.value / 100 + ')';
       imagePreviewElement.style['transform'] = transformScale;
@@ -202,9 +201,9 @@
   }
 
   function zoomOutHandler() {
-    if (inputValueElement.value <= 25) {
-      return;
-    } else {
+    var transformScale;
+
+    if (inputValueElement.value > 25) {
       inputValueElement.value = String(parseInt(inputValueElement.value, 10) - 25);
       transformScale = 'scale(' + inputValueElement.value / 100 + ')';
       imagePreviewElement.style['transform'] = transformScale;
@@ -259,8 +258,15 @@
   submitBtnElement.addEventListener('click', function (event) {
     event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
-    if (validateHashTags(str) === null) {
-      uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
+    if(!!str){
+      var validationResult = validateHashTags(str);
+      if (validationResult === null) {
+        uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
+        uploadFormElement.submit();
+      } else {
+        alert(validationResult);
+      }
+    } else {
       uploadFormElement.submit();
     }
   });
