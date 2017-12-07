@@ -268,8 +268,6 @@
     var arrString = [];
     var a = [];
     for (var i = 0; i < array.length; i++) {
-      // тут проверяем каждый хэштег на корректность и возвращаем ошибку, если есть
-
       if(array[i].length > 20) {
         return alert('Длина тега не может превышать 20 символов!');
       }
@@ -312,7 +310,6 @@
     e.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
     if (validateHashTags(str) === null) {
-      alert('Можно отправлять форму. Все гуд!');
       uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
       uploadFormElement.submit();
     } else {
