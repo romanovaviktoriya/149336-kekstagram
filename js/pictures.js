@@ -133,10 +133,10 @@
     }
   });
 
-  var uploadForm = document.querySelector('#upload-select-image');
-  var uploadFile = uploadForm.querySelector('#upload-file');
-  var uploadCancel = uploadForm.querySelector('#upload-cancel');
-  var focusUploadDescription = uploadForm.querySelector('.upload-form-description');
+  var uploadFormElement = document.querySelector('#upload-select-image');
+  var uploadFile = uploadFormElement.querySelector('#upload-file');
+  var uploadCancel = uploadFormElement.querySelector('#upload-cancel');
+  var focusUploadDescription = uploadFormElement.querySelector('.upload-form-description');
 
   uploadFile.addEventListener('change', function () {
     openUploadForm();
@@ -154,7 +154,7 @@
   }
 
   function openUploadForm() {
-    uploadForm.querySelector('.upload-overlay').classList.remove('hidden');
+    uploadFormElement.querySelector('.upload-overlay').classList.remove('hidden');
     document.addEventListener('keydown', uploadFormEscPressHandler);
   }
 
@@ -162,7 +162,7 @@
     if (focusUploadDescription === document.activeElement) {
       event.preventDefault();
     } else {
-      uploadForm.querySelector('.upload-overlay').classList.add('hidden');
+      uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
       document.removeEventListener('keydown', uploadFormEscPressHandler);
     }
   }
@@ -173,11 +173,11 @@
     }
   });
 
-  var imagePreview = uploadForm.querySelector('.effect-image-preview');
-  var effectImage = uploadForm.querySelectorAll('.upload-effect-label');
+  var imagePreview = uploadFormElement.querySelector('.effect-image-preview');
+  var effectImage = uploadFormElement.querySelectorAll('.upload-effect-label');
 
-  function addEffectImageHandler() {
-    var str = this.previousElementSibling.id;
+  function addEffectImageHandler(event) {
+    var str = event.currentTarget.previousElementSibling.id;
     str = str.substring(7);
     imagePreview.className = 'effect-image-preview ' + str;
   }
@@ -186,38 +186,45 @@
     effectImage[j].addEventListener('click', addEffectImageHandler, true);
   }
 
-  var controlsResizeBtn = uploadForm.querySelector('.upload-resize-controls-button');
-  var decrementBtn = uploadForm.querySelector('.upload-resize-controls-button-dec');
-  var incrementBtn = uploadForm.querySelector('.upload-resize-controls-button-inc');
+  // var controlsResizeBtn = uploadFormElement.querySelector('.upload-resize-controls-button');
+  var decrementBtn = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
+  var incrementBtn = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
+  var inputValue = decrementBtn.nextElementSibling;
+  var transformScale;
 
-  function changeResizeHandler() {
-    var inputValue = decrementBtn.nextElementSibling;
-    var transformScale;
+  function zoomIn() {
+    inputValue.value = String(parseInt(inputValue.value, 10) + 25);
+    transformScale = 'scale(' + inputValue.value / 100 + ')';
+    imagePreview.style['transform'] = transformScale;
 
+    return transformScale;
+  }
+
+  function zoomOut() {
+    inputValue.value = String(parseInt(inputValue.value, 10) - 25);
+    transformScale = 'scale(' + inputValue.value / 100 + ')';
+    imagePreview.style['transform'] = transformScale;
+
+    return transformScale;
+  }
+
+  function changeResizeHandler(event) {
     if (inputValue.value <= 25) {
-      if (decrementBtn === document.activeElement) {
+      if (decrementBtn === event.target) {
         return;
       } else {
-        inputValue.value = String(parseInt(inputValue.value, 10) + 25);
-        transformScale = 'scale(' + inputValue.value / 100 + ')';
-        imagePreview.style['transform'] = transformScale;
+        zoomIn();
       }
-    } else if (inputValue.value > 25) {
+    } else {
       if (inputValue.value < 100) {
-        if (decrementBtn === document.activeElement) {
-          inputValue.value = String(parseInt(inputValue.value, 10) - 25);
-          transformScale = 'scale(' + inputValue.value / 100 + ')';
-          imagePreview.style['transform'] = transformScale;
+        if (decrementBtn === event.target) {
+          zoomOut();
         } else {
-          inputValue.value = String(parseInt(inputValue.value, 10) + 25);
-          transformScale = 'scale(' + inputValue.value / 100 + ')';
-          imagePreview.style['transform'] = transformScale;
+          zoomIn();
         }
       } else {
-        if (decrementBtn === document.activeElement) {
-          inputValue.value = String(parseInt(inputValue.value, 10) - 25);
-          transformScale = 'scale(' + inputValue.value / 100 + ')';
-          imagePreview.style['transform'] = transformScale;
+        if (decrementBtn === event.target) {
+          zoomOut();
         } else {
           return;
         }
@@ -226,40 +233,101 @@
   }
 
   decrementBtn.addEventListener('click', function () {
-    changeResizeHandler();
+    changeResizeHandler(event);
   });
 
   incrementBtn.addEventListener('click', function () {
-    changeResizeHandler();
+    changeResizeHandler(event);
   });
 
-  var str = uploadForm.querySelector('.upload-form-hashtags').value;
-  //var str = "#todo, #абракадабра #яМа #ау #Яма #папа  #еду #дом #ау па #маммамамамамамамамамамаамаммааа #a css #js #dwdwd #go #ухуууу! #абракадабра #ау"; // строка
-  var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
-  var arrHach = str.toLowerCase().match(regexp); //игнор регистра
-  console.log('отобранные тэги: ' +arrHach + ', длина ' + arrHach.length);    //отобранные тэги
-  var arr = String(arrHach);
-  var names = arr.split(' ');  // var names = arr.split(' ', 5);
+  // var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
+  // var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
+  // var arrHach = str.toLowerCase().match(regexp); // игнор регистра
+  // console.log('отобранные тэги: ' + arrHach + ', длина ' + arrHach.length);    // отобранные тэги
+  // var arr = String(arrHach);
 
   // --------- игнорирование регистра
 
   // ---------
 
   // ------- Unique elements --------
-  function unique(arr) {
+  function isUnique(arr) {
     var obj = {};
 
     for (var i = 0; i < arr.length; i++) {
       var str = arr[i];
-      obj[str] = true; // запомнить строку в виде свойства объекта
+      obj[str] = true;
     }
 
-    return Object.keys(obj); // или собрать ключи перебором для IE8-
+    return Object.keys(obj);
   }
-  var unicHach = unique(arrHach);
-  console.log('Уникальные тэги: ' + unicHach);
+  // var unicHach = isUnique(arrHach);
+  // console.log('Уникальные тэги: ' + unicHach + ' ' + typeof(unicHach));
+  // var itogHach = String(String(unicHach).split(',', 5));
+  // console.log('Не более 5 тегов! ' + itogHach + ' ' + typeof(itogHach));
+  // uploadFormElement.querySelector('.upload-form-hashtags').value = String(itogHach);
 
-  var itogHach = String(unicHach).split(',', 5);
-  console.log('Не более 5 тегов! ' + itogHach);
-    uploadForm.querySelector('.upload-form-hashtags').value = String(itogHach);
+
+  function validateHashTags(str) {
+    var hashArr = str.split(' ');
+    console.log('hashArr: ' + hashArr + ', тип: ' + typeof(hashArr));
+    if (hashArr.length > 5) {
+      uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
+      return alert('Хэштегов больше 5');
+    }
+    // -----------------------
+    var array = str.split(' ');
+    var arrHach = [];
+    var a = [];
+    for (var i = 0; i < array.length; i++) {
+      // тут проверяем каждый хэштег на корректность и возвращаем ошибку, если есть
+      console.log(array[i]);
+
+      var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
+      a[i] = array[i].toLowerCase().match(regexp); // игнор регистра
+
+
+    }
+    function objToArray(el, el2, el3, el4, el5){
+      this.el = el;
+      this.el2 = el2;
+      this.el3 = el3;
+      this.el4 = el4;
+      this.el5 = el5;
+    }
+    a = new objToArray(a[0], a[1], a[2], a[3], a[4]);
+    for(var index in a) {
+      arrHach.push(a[index]);
+    }
+
+    var filterArrHach = arrHach.filter(function(n){ return n != undefined }); // очистка массива от пустых значений
+
+    console.log('отобранные тэги: ' + filterArrHach + ', длина ' + filterArrHach.length + ', тип ' + typeof(filterArrHach));    // отобранные тэги
+    var unicHach = isUnique(filterArrHach);
+    console.log('Уникальные тэги: ' + unicHach  + ', длина ' + unicHach.length + ', тип ' + typeof(unicHach));
+    var itogHach = String(String(unicHach).split(',', 5));
+    if(filterArrHach === unicHach) {
+      console.log('Все теги уникальны. Отлично!' + filterArrHach + ' === ' + unicHach);
+      return null;
+    } else {
+      return alert('Не уникальные тэги! ' + filterArrHach + ' !== ' + unicHach);
+    }
+    console.log('Не более 5 тегов! ' + itogHach + ' ' + typeof(itogHach));
+    return null;
+  }
+
+  var submitBtn = uploadFormElement.querySelector('#upload-submit');
+
+  submitBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
+    if (validateHashTags(str) === null) {
+      alert('Можно отправлять форму. Все гуд!');
+      uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
+      //uploadFormElement.submit();
+    } else {
+      console.log('Форма не отправлена. Есть ошибки');
+      return false;
+    }
+  });
 })();
