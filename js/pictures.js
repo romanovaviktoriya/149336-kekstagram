@@ -182,8 +182,8 @@
     imagePreviewElement.className = 'effect-image-preview ' + str;
   }
 
-  for (var j = 0; j <= effectImageElement.length - 1; j++) {
-    effectImageElement[j].addEventListener('click', addEffectImageHandler, true);
+  for (var k = 0; k <= effectImageElement.length - 1; k++) {
+    effectImageElement[k].addEventListener('click', addEffectImageHandler, true);
   }
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
@@ -218,8 +218,8 @@
   function unique(arr) {
     var obj = {};
 
-    for (var i = 0; i < arr.length; i++) {
-      var str = arr[i];
+    for (var l = 0; l < arr.length; l++) {
+      var str = arr[l];
       obj[str] = true;
     }
 
@@ -236,10 +236,10 @@
 
     // проверяем чтобы начинался с решетки и имел не более 20 символов
     var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}$)/gi;
-    for (var i = 0; i < hashArr.length; i++) {
-      if (hashArr[i].match(regexp) === null) {
+    for (var m = 0; m < hashArr.length; m++) {
+      if (hashArr[m].match(regexp) === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
-        return 'Хэштег ' + hashArr[i] + ' невалиден';
+        return 'Хэштег ' + hashArr[m] + ' невалиден';
       }
     }
 
@@ -262,8 +262,6 @@
     if (validateHashTags(str) === null) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
       uploadFormElement.submit();
-    } else {
-      console.log('Форма не отправлена. Есть ошибки');
     }
   });
 })();
