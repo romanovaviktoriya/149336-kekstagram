@@ -240,15 +240,7 @@
     changeResizeHandler(event);
   });
 
-  // var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
-  // var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
-  // var arrHach = str.toLowerCase().match(regexp); // игнор регистра
-  // console.log('отобранные тэги: ' + arrHach + ', длина ' + arrHach.length);    // отобранные тэги
-  // var arr = String(arrHach);
-
   // --------- игнорирование регистра
-
-  // ---------
 
   // ------- Unique elements --------
   function isUnique(arr) {
@@ -261,32 +253,28 @@
 
     return Object.keys(obj);
   }
-  // var unicHach = isUnique(arrHach);
-  // console.log('Уникальные тэги: ' + unicHach + ' ' + typeof(unicHach));
-  // var itogHach = String(String(unicHach).split(',', 5));
-  // console.log('Не более 5 тегов! ' + itogHach + ' ' + typeof(itogHach));
-  // uploadFormElement.querySelector('.upload-form-hashtags').value = String(itogHach);
 
-
+  // ------- validate form --------
   function validateHashTags(str) {
     var hashArr = str.split(' ');
-    console.log('hashArr: ' + hashArr + ', тип: ' + typeof(hashArr));
+    console.log('Строка : ' + hashArr);
     if (hashArr.length > 5) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
       return alert('Хэштегов больше 5');
     }
-    // -----------------------
+
     var array = str.split(' ');
     var arrHach = [];
+    var arrString = [];
     var a = [];
     for (var i = 0; i < array.length; i++) {
       // тут проверяем каждый хэштег на корректность и возвращаем ошибку, если есть
-      console.log(array[i]);
 
-      var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}(?= |$))/gi; // регулярка
+      if(array[i].length > 20) {
+        return alert('Длина тега не может превышать 20 символов!');
+      }
+      var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}$)/gi; // регулярка
       a[i] = array[i].toLowerCase().match(regexp); // игнор регистра
-
-
     }
     function objToArray(el, el2, el3, el4, el5){
       this.el = el;
@@ -298,15 +286,17 @@
     a = new objToArray(a[0], a[1], a[2], a[3], a[4]);
     for(var index in a) {
       arrHach.push(a[index]);
+      arrString.push(a[index]);
     }
-
     var filterArrHach = arrHach.filter(function(n){ return n != undefined }); // очистка массива от пустых значений
-
-    console.log('отобранные тэги: ' + filterArrHach + ', длина ' + filterArrHach.length + ', тип ' + typeof(filterArrHach));    // отобранные тэги
+    var filterArrString = arrString.filter(function(n){ return n != undefined }); // очистка массива от пустых значений
+    console.log('Введеная строка: ' + filterArrString);
+    console.log('отобранные тэги: ' + filterArrHach + ', длина ' + filterArrHach.length);    // отобранные тэги
     var unicHach = isUnique(filterArrHach);
-    console.log('Уникальные тэги: ' + unicHach  + ', длина ' + unicHach.length + ', тип ' + typeof(unicHach));
+    console.log('Уникальные тэги: ' + unicHach  + ', длина ' + unicHach.length);
     var itogHach = String(String(unicHach).split(',', 5));
-    if(filterArrHach === unicHach) {
+
+    if(String(filterArrString) === String(unicHach)) {
       console.log('Все теги уникальны. Отлично!' + filterArrHach + ' === ' + unicHach);
       return null;
     } else {
@@ -324,7 +314,7 @@
     if (validateHashTags(str) === null) {
       alert('Можно отправлять форму. Все гуд!');
       uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
-      //uploadFormElement.submit();
+      uploadFormElement.submit();
     } else {
       console.log('Форма не отправлена. Есть ошибки');
       return false;
