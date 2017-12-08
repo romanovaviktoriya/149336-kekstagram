@@ -234,7 +234,7 @@
     }
 
     // проверяем чтобы начинался с решетки и имел не более 20 символов
-    var regexp = /(#[А-Яа-яЁё][^[A-Za-z\s!,_]{1,20}$)/gi;
+    var regexp = /(#[А-Яа-яЁё]{1,20}$)/gi;
     for (var m = 0; m < hashArr.length; m++) {
       if (hashArr[m].match(regexp) === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
