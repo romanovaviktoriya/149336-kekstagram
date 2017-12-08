@@ -255,16 +255,31 @@
 
   var submitBtnElement = uploadFormElement.querySelector('#upload-submit');
 
+  function showMessageDanger(validationResult) {
+    var parentElement = uploadFormElement.querySelector('.upload-effect__container');
+    var previosElement = uploadFormElement.querySelector('.upload-effect-controls');
+    var uploadHashtagsElement = uploadFormElement.querySelector('.upload-form-hashtags');
+
+    if (uploadHashtagsElement.previousElementSibling !== previosElement) {
+      parentElement.removeChild(uploadFormElement.querySelector('.alert-danger'));
+    }
+    var message = document.createElement('div');
+
+    message.className = 'alert-danger';
+    message.innerHTML = validationResult;
+    parentElement.insertBefore(message, uploadHashtagsElement);
+  }
+
   submitBtnElement.addEventListener('click', function (event) {
     event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
-    if(!!str){
+    if (!!str) {
       var validationResult = validateHashTags(str);
       if (validationResult === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
         uploadFormElement.submit();
       } else {
-        alert(validationResult);
+        showMessageDanger(validationResult);
       }
     } else {
       uploadFormElement.submit();
