@@ -15,10 +15,10 @@
     return [0, 0];
   }
 
-  function renderMainPhoto(object) {
+  window.renderMainPhoto = function (object) {
     var matchStr = getMatchStr(object);
     galleryOverlayElement.querySelector('img').src = object.src;
     galleryOverlayElement.querySelector('.likes-count').textContent = matchStr[1];
     galleryOverlayElement.querySelector('.comments-count').textContent = matchStr[0];
-  }
+  };
 })();

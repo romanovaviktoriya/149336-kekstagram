@@ -1,6 +1,3 @@
-/**
- * Created by КузяАсер on 22.11.2017.
- */
 'use strict';
 (function () {
   var ESC_KEYCODE = 27;
