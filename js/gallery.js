@@ -84,7 +84,7 @@
   //
   var fragmentElement = document.createDocumentFragment();
   for (var i = 0; i < PICTURES_COUNT; i++) {
-    fragmentElement.appendChild(window.renderPhoto(window.generatePicturesArray));
+    fragmentElement.appendChild(window.renderPhoto(window.generatePicturesArray(i)));
   }
   pictureListElement.appendChild(fragmentElement);
 
@@ -109,7 +109,7 @@
 
   sliderCloseElement.tabIndex = 0;
 
-  function clickHandler(e) {
+  function openPhotoHandler(e) {
     e.preventDefault();
     var el = e.currentTarget.children[0];
     window.renderMainPhoto(el);
@@ -117,7 +117,7 @@
   }
 
   for (var j = 0; j <= slidersOpenElement.length - 1; j++) {
-    slidersOpenElement[j].addEventListener('click', clickHandler, true);
+    slidersOpenElement[j].addEventListener('click', openPhotoHandler, true);
   }
 
   sliderCloseElement.addEventListener('click', function () {

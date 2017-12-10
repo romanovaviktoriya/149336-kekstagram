@@ -44,17 +44,15 @@
   });
 
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
-  var effectImageElement = uploadFormElement.querySelectorAll('.upload-effect-label');
+  var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
   function addEffectImageHandler(event) {
-    var str = event.currentTarget.previousElementSibling.id;
+    var str = event.target.previousElementSibling.id;
     str = str.substring(7);
     imagePreviewElement.className = 'effect-image-preview ' + str;
   }
 
-  for (var k = 0; k <= effectImageElement.length - 1; k++) {
-    effectImageElement[k].addEventListener('click', addEffectImageHandler, true);
-  }
+  uploadControlsElement.addEventListener('click', addEffectImageHandler, false);
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
@@ -133,11 +131,11 @@
     if (uploadHashtagsElement.previousElementSibling !== previosElement) {
       parentElement.removeChild(uploadFormElement.querySelector('.alert-danger'));
     }
-    var message = document.createElement('div');
+    var messageElement = document.createElement('div');
 
-    message.className = 'alert-danger';
-    message.innerHTML = validationResult;
-    parentElement.insertBefore(message, uploadHashtagsElement);
+    messageElement.className = 'alert-danger';
+    messageElement.innerHTML = validationResult;
+    parentElement.insertBefore(messageElement, uploadHashtagsElement);
   }
 
   submitBtnElement.addEventListener('click', function (event) {

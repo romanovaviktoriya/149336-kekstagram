@@ -1,6 +1,3 @@
-/**
- * Created by КузяАсер on 22.11.2017.
- */
 'use strict';
 (function () {
   var COMMENTS = [
@@ -11,8 +8,6 @@
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
-  // var ESC_KEYCODE = 27;
-  // var ENTER_KEYCODE = 13;
   var PICTURES_COUNT = 25;
 
   function getRandomInteger(min, max) {
@@ -42,58 +37,12 @@
     return comments;
   }
 
-  // var galleryOverlayElement = document.querySelector('.gallery-overlay');
-
   var pictures = [];
 
-  window.generatePicturesArray = function () {
+  window.generatePicturesArray = function (index) {
     for (var i = 0; i < PICTURES_COUNT; i++) {
       pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
-      console.log(i + ' элемент: ' + pictures[i]);
     }
-    return pictures;
+    return pictures[index];
   };
-  // window.generatePicturesArray();
-
-  // function sliderEscPressHandler(e) {
-  //   if (e.keyCode === ESC_KEYCODE) {
-  //     closeSlider();
-  //   }
-  // }
-  //
-  // function openSlider() {
-  //   event.preventDefault();
-  //   galleryOverlayElement.classList.remove('hidden');
-  //   document.addEventListener('keydown', sliderEscPressHandler);
-  // }
-  //
-  // function closeSlider() {
-  //   galleryOverlayElement.classList.add('hidden');
-  //   document.removeEventListener('keydown', sliderEscPressHandler);
-  // }
-  // var slidersOpenElement = document.querySelectorAll('.picture');
-  // var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
-  //
-  // sliderCloseElement.tabIndex = 0;
-  //
-  // function clickHandler(e) {
-  //   e.preventDefault();
-  //   var el = e.currentTarget.children[0];
-  //   window.renderMainPhoto(el);
-  //   openSlider();
-  // }
-  //
-  // for (var j = 0; j <= slidersOpenElement.length - 1; j++) {
-  //   slidersOpenElement[j].addEventListener('click', clickHandler, true);
-  // }
-  //
-  // sliderCloseElement.addEventListener('click', function () {
-  //   closeSlider();
-  // });
-  //
-  // sliderCloseElement.addEventListener('keydown', function (e) {
-  //   if (e.keyCode === ENTER_KEYCODE) {
-  //     closeSlider();
-  //   }
-  // });
 })();
