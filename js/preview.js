@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var galleryOverlayElement = document.querySelector('.gallery-overlay');
-  var pictures = [];
+  var pictures = window.generatePicturesArray();
 
   function getMatchStr(object) {
     for (var i = 0; i < pictures.length; i++) {

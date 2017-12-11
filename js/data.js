@@ -43,6 +43,6 @@
     for (var i = 0; i < PICTURES_COUNT; i++) {
       pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
     }
-    return pictures[index];
+    return pictures;
   };
 })();

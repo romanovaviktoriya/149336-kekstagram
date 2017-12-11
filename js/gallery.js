@@ -84,7 +84,7 @@
   //
   var fragmentElement = document.createDocumentFragment();
   for (var i = 0; i < PICTURES_COUNT; i++) {
-    fragmentElement.appendChild(window.renderPhoto(window.generatePicturesArray(i)));
+    fragmentElement.appendChild(window.renderPhoto(window.generatePicturesArray()[i]));
   }
   pictureListElement.appendChild(fragmentElement);
 
