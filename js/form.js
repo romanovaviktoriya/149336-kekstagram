@@ -47,7 +47,10 @@
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
   function addEffectImageHandler(event) {
-    var str = event.target.previousElementSibling.id;
+    if (event.target.className === 'upload-effect-preview') {
+      return;
+    }
+    var str = event.target.id;
     str = str.substring(7);
     imagePreviewElement.className = 'effect-image-preview ' + str;
   }
