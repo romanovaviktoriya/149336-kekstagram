@@ -38,7 +38,7 @@
   function openPhotoHandler(e) {
     e.preventDefault();
     var el = e.currentTarget.children[0];
-    window.renderMainPhoto(el);
+    window.renderMainPhoto(el, pictures);
     openSlider();
   }
 

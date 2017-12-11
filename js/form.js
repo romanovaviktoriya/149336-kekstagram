@@ -144,7 +144,7 @@
   submitBtnElement.addEventListener('click', function (event) {
     event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
-    if (!!str) {
+    if (str !== '') {
       var validationResult = validateHashTags(str);
       if (validationResult === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');

@@ -39,7 +39,7 @@
 
   var pictures = [];
 
-  window.generatePicturesArray = function (index) {
+  window.generatePicturesArray = function () {
     for (var i = 0; i < PICTURES_COUNT; i++) {
       pictures[i] = {src: getUrlImage(i), likes: getCountLikes(), comments: generateComments()};
     }
