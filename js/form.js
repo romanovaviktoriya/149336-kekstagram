@@ -156,4 +156,92 @@
       uploadFormElement.submit();
     }
   });
+
+  // начало перетаскивания ползунка
+  var scopeElement = uploadFormElement.querySelector('.upload-effect-level-line');
+  var effectLevelPinElement = uploadFormElement.querySelector('.upload-effect-level-pin');
+  var effectLevelLineElement = uploadFormElement.querySelector('.upload-effect-level-val');
+
+  function getCoordsScope(elem) {
+    var box = elem.getBoundingClientRect();
+
+    return {
+      left: box.left,
+      right: box.right
+    };
+  }
+
+  function getCoordsPin(shift) {
+    // вычисляем координаты ползунка и линейки
+    var scopeEffectLevelPin = getCoordsScope(scopeElement);
+    var coordsEffectLevelPin = getCoordsScope(effectLevelPinElement);
+
+    // вычисляем границы движения ползунка
+    var leftCoords = Math.round(scopeEffectLevelPin.left);
+    var rightCoords = Math.round(scopeEffectLevelPin.right);
+
+    effectLevelPinElement.style.left = (effectLevelPinElement.offsetLeft - shift.x) + 'px';
+    effectLevelLineElement.style.width = (effectLevelPinElement.offsetLeft - shift.x) + 'px';
+
+    if (coordsEffectLevelPin.left > scopeEffectLevelPin.left) {
+
+    } else {
+      // установить минимальное значение
+      coordsEffectLevelPin.left = leftCoords;
+      console.log('Минимальное значение Х: ' + coordsEffectLevelPin.right);
+      effectLevelPinElement.style.left = (0 + effectLevelPinElement.clientWidth / 2) + 'px';
+      effectLevelLineElement.style.width = (0 - effectLevelPinElement.clientWidth / 2) + 'px';
+    }
+
+    if (coordsEffectLevelPin.right < scopeEffectLevelPin.right) {
+
+    } else {
+      // установить максимальное значение
+      coordsEffectLevelPin.right = rightCoords;
+      console.log('Максимальное значение Х: ' + coordsEffectLevelPin.right);
+      effectLevelPinElement.style.left = (455 - effectLevelPinElement.clientWidth / 2) + 'px';
+      effectLevelLineElement.style.width = (455 - effectLevelPinElement.clientWidth / 2) + 'px';
+    }
+
+    return coordsEffectLevelPin;
+  }
+
+  effectLevelPinElement.addEventListener('mousedown', function (event) {
+    event.preventDefault();
+
+    // стартовые координаты
+    var startCoords = {
+      x: event.clientX,
+      y: event.clientY
+    };
+
+    // обновлять смещение относительно первоначальной точки
+    var onMouseMove = function (moveEvent) {
+      moveEvent.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvent.clientX,
+        y: startCoords.y - moveEvent.clientY
+      };
+
+      startCoords = {
+        x: moveEvent.clientX,
+        y: moveEvent.clientY
+      };
+
+      getCoordsPin(shift);
+    };
+
+    var onMouseUp = function (upEvent) {
+      upEvent.preventDefault();
+
+      // при отпускании мыши прекратить слушать события движения мыши
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    // обработчики события передвижения мыши и отпускания кнопки мыши
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 })();
