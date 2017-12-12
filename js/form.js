@@ -7,6 +7,11 @@
   var uploadFileElement = uploadFormElement.querySelector('#upload-file');
   var uploadCancelElement = uploadFormElement.querySelector('#upload-cancel');
   var focusUploadDescriptionElement = uploadFormElement.querySelector('.upload-form-description');
+  var uploadLevelElement = uploadFormElement.querySelector('.upload-effect-level');
+  var uploadLevelInputElement = uploadLevelElement.querySelector('.upload-effect-level-value');
+  var scopeElement = uploadLevelElement.querySelector('.upload-effect-level-line');
+  var effectLevelPinElement = uploadLevelElement.querySelector('.upload-effect-level-pin');
+  var effectLevelLineElement = uploadLevelElement.querySelector('.upload-effect-level-val');
 
   uploadFileElement.addEventListener('change', function () {
     openUploadForm();
@@ -46,13 +51,59 @@
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
+
   function addEffectImageHandler(event) {
     if (event.target.className === 'upload-effect-preview') {
       return;
     }
+    var newPercent = getCoordsPin(event.clientX);
+    function checkFilter(newPersent) {
+      var inp = uploadControlsElement.querySelectorAll('input');
+      for (var i = 0; i < inp.length; i++) {
+        if (inp[i].type === 'radio' && inp[i].checked) {
+          var filter = inp[i].value;
+          var znach;
+
+          switch (filter) {
+            case 'none':
+              znach = 'none';
+              uploadLevelElement.classList.add('hidden');
+              return znach;
+              break;
+            case 'chrome':
+              uploadLevelElement.classList.remove('hidden');
+              znach = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')'; // parseFloat(123.3453346.toFixed(3))
+              return znach;
+              break;
+            case 'sepia':
+              uploadLevelElement.classList.remove('hidden');
+              znach = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+              return znach;
+              break;
+            case 'marvin':
+              uploadLevelElement.classList.remove('hidden');
+              znach = 'invert(' + String(newPercent) + '%)';
+              return znach;
+              break;
+            case 'phobos':
+              uploadLevelElement.classList.remove('hidden');
+              znach = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
+              return znach;
+              break;
+            case 'heat':
+              uploadLevelElement.classList.remove('hidden');
+              znach = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
+              return znach;
+              break;
+          }
+        }
+      }
+    }
+    var fil = checkFilter();
     var str = event.target.id;
     str = str.substring(7);
     imagePreviewElement.className = 'effect-image-preview ' + str;
+    imagePreviewElement.style.filter = fil;
   }
 
   uploadControlsElement.addEventListener('click', addEffectImageHandler, false);
@@ -158,9 +209,6 @@
   });
 
   // начало перетаскивания ползунка
-  var scopeElement = uploadFormElement.querySelector('.upload-effect-level-line');
-  var effectLevelPinElement = uploadFormElement.querySelector('.upload-effect-level-pin');
-  var effectLevelLineElement = uploadFormElement.querySelector('.upload-effect-level-val');
 
   function getCoordsScope(elem) {
     var box = elem.getBoundingClientRect();
@@ -171,65 +219,28 @@
     };
   }
 
-  function getCoordsPin(shift) {
-    // вычисляем координаты ползунка и линейки
+  function getCoordsPin(mouseX) {
+    // вычисляем координаты ползунка
     var scopeEffectLevelPin = getCoordsScope(scopeElement);
-    var coordsEffectLevelPin = getCoordsScope(effectLevelPinElement);
-
-    // вычисляем границы движения ползунка
-    var leftCoords = Math.round(scopeEffectLevelPin.left);
-    var rightCoords = Math.round(scopeEffectLevelPin.right);
-
-    effectLevelPinElement.style.left = (effectLevelPinElement.offsetLeft - shift.x) + 'px';
-    effectLevelLineElement.style.width = (effectLevelPinElement.offsetLeft - shift.x) + 'px';
-
-    if (coordsEffectLevelPin.left > scopeEffectLevelPin.left) {
-
-    } else {
-      // установить минимальное значение
-      coordsEffectLevelPin.left = leftCoords;
-      console.log('Минимальное значение Х: ' + coordsEffectLevelPin.right);
-      effectLevelPinElement.style.left = (0 + effectLevelPinElement.clientWidth / 2) + 'px';
-      effectLevelLineElement.style.width = (0 - effectLevelPinElement.clientWidth / 2) + 'px';
+    // вычисляем новое положение ползунка
+    var newPercent = (mouseX - scopeEffectLevelPin.left) * 100 / (scopeEffectLevelPin.right - scopeEffectLevelPin.left);
+    // если движение в пределах границ, меняем положение ползунка
+    if (newPercent > 0 && newPercent < 100) {
+      effectLevelPinElement.style.left = newPercent + '%';
+      effectLevelLineElement.style.width = newPercent + '%';
+      uploadLevelInputElement.value = Math.round(newPercent);
     }
-
-    if (coordsEffectLevelPin.right < scopeEffectLevelPin.right) {
-
-    } else {
-      // установить максимальное значение
-      coordsEffectLevelPin.right = rightCoords;
-      console.log('Максимальное значение Х: ' + coordsEffectLevelPin.right);
-      effectLevelPinElement.style.left = (455 - effectLevelPinElement.clientWidth / 2) + 'px';
-      effectLevelLineElement.style.width = (455 - effectLevelPinElement.clientWidth / 2) + 'px';
-    }
-
-    return coordsEffectLevelPin;
+    return newPercent;
   }
 
   effectLevelPinElement.addEventListener('mousedown', function (event) {
     event.preventDefault();
 
-    // стартовые координаты
-    var startCoords = {
-      x: event.clientX,
-      y: event.clientY
-    };
-
     // обновлять смещение относительно первоначальной точки
     var onMouseMove = function (moveEvent) {
       moveEvent.preventDefault();
 
-      var shift = {
-        x: startCoords.x - moveEvent.clientX,
-        y: startCoords.y - moveEvent.clientY
-      };
-
-      startCoords = {
-        x: moveEvent.clientX,
-        y: moveEvent.clientY
-      };
-
-      getCoordsPin(shift);
+      getCoordsPin(moveEvent.clientX);
     };
 
     var onMouseUp = function (upEvent) {
