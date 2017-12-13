@@ -19,7 +19,6 @@
 
   uploadCancelElement.addEventListener('click', function () {
     closeUploadForm();
-    uploadFileElement.click();
   });
 
   function uploadFormEscPressHandler(e) {
@@ -51,62 +50,76 @@
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
+  function checkFilter() {
+    var newPercent = getCoordsPin(event.clientX);
+    var inp = uploadControlsElement.querySelectorAll('input');
+
+    for (var i = 0; i < inp.length; i++) {
+      if (inp[i].type === 'radio' && inp[i].checked) {
+        var filter = inp[i].value;
+        var znach;
+        switch (filter) {
+          case 'none':
+            znach = 'none';
+            break;
+          case 'chrome':
+            znach = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'sepia':
+            znach = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'marvin':
+            znach = 'invert(' + String(newPercent) + '%)';
+            break;
+          case 'phobos':
+            znach = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
+            break;
+          case 'heat':
+            znach = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
+            break;
+        }
+      }
+    }
+  }
 
   function addEffectImageHandler(event) {
     if (event.target.className === 'upload-effect-preview') {
       return;
     }
-    var newPercent = getCoordsPin(event.clientX);
-    function checkFilter(newPersent) {
-      var inp = uploadControlsElement.querySelectorAll('input');
-      for (var i = 0; i < inp.length; i++) {
-        if (inp[i].type === 'radio' && inp[i].checked) {
-          var filter = inp[i].value;
-          var znach;
-
-          switch (filter) {
-            case 'none':
-              znach = 'none';
-              uploadLevelElement.classList.add('hidden');
-              return znach;
-              break;
-            case 'chrome':
-              uploadLevelElement.classList.remove('hidden');
-              znach = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')'; // parseFloat(123.3453346.toFixed(3))
-              return znach;
-              break;
-            case 'sepia':
-              uploadLevelElement.classList.remove('hidden');
-              znach = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
-              return znach;
-              break;
-            case 'marvin':
-              uploadLevelElement.classList.remove('hidden');
-              znach = 'invert(' + String(newPercent) + '%)';
-              return znach;
-              break;
-            case 'phobos':
-              uploadLevelElement.classList.remove('hidden');
-              znach = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
-              return znach;
-              break;
-            case 'heat':
-              uploadLevelElement.classList.remove('hidden');
-              znach = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
-              return znach;
-              break;
-          }
-        }
-      }
-    }
-    var fil = checkFilter();
     var str = event.target.id;
     str = str.substring(7);
+    if (str === 'effect-none') {
+      uploadLevelElement.classList.add('hidden');
+    } else {
+      uploadLevelElement.classList.remove('hidden');
+    }
     imagePreviewElement.className = 'effect-image-preview ' + str;
-    imagePreviewElement.style.filter = fil;
+  }
+
+  function changeFilterHandler() {
+    var inp = uploadControlsElement.querySelectorAll('input');
+    for (var i = 0; i < inp.length; i++) {
+      if (inp[i].type === 'radio' && inp[i].checked) {
+        var filter = inp[i].value;
+        var defaultPercent;
+
+        switch (filter) {
+          case 'none':
+            defaultPercent = 0;
+            break;
+          default:
+            defaultPercent = 100;
+        }
+        effectLevelPinElement.style.left = defaultPercent + '%';
+        effectLevelLineElement.style.width = defaultPercent + '%';
+        uploadLevelInputElement.value = Math.round(defaultPercent);
+      }
+    }
+    imagePreviewElement.style.filter = '';
   }
 
   uploadControlsElement.addEventListener('click', addEffectImageHandler, false);
+  uploadControlsElement.addEventListener('change', changeFilterHandler, false);
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
@@ -241,6 +254,8 @@
       moveEvent.preventDefault();
 
       getCoordsPin(moveEvent.clientX);
+      var fil = checkFilter();
+      imagePreviewElement.style.filter = fil;
     };
 
     var onMouseUp = function (upEvent) {
