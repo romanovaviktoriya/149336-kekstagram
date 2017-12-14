@@ -50,11 +50,10 @@
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
-  function checkFilter() {
-    var newPercent = getCoordsPin(event.clientX);
-    var inputElement = uploadControlsElement.querySelectorAll('input');
+  function checkFilter(newPercent) {
+    var inputElement = uploadControlsElement.querySelectorAll('input[type="radio"]');
     for (var i = 0; i < inputElement.length; i++) {
-      if (inputElement[i].type === 'radio' && inputElement[i].checked) {
+      if (inputElement[i].checked) {
         var filter = inputElement[i].value;
         var filterValue;
 
@@ -97,50 +96,14 @@
     imagePreviewElement.className = 'effect-image-preview ' + str;
   }
 
-  function changeFilterHandler() {
-    var inputElement = uploadControlsElement.querySelectorAll('input');
-    for (var i = 0; i < inputElement.length; i++) {
-      if (inputElement[i].type === 'radio' && inputElement[i].checked) {
-        var filter = inputElement[i].value;
-        var defaultPercent;
-        var filterValue;
-
-        switch (filter) {
-          case 'none':
-            defaultPercent = 0;
-            filterValue = 'none';
-            break;
-          case 'chrome':
-            defaultPercent = 20;
-            filterValue = 'grayscale(' + String(parseFloat(defaultPercent / 100).toFixed(2)) + ')';
-            break;
-          case 'sepia':
-            defaultPercent = 20;
-            filterValue = 'sepia(' + String(parseFloat(defaultPercent / 100).toFixed(2)) + ')';
-            break;
-          case 'marvin':
-            defaultPercent = 20;
-            filterValue = 'invert(' + String(defaultPercent) + '%)';
-            break;
-          case 'phobos':
-            defaultPercent = 20;
-            filterValue = 'blur(' + String(Math.round((defaultPercent * 3) / 100)) + 'px)';
-            break;
-          case 'heat':
-            defaultPercent = 20;
-            filterValue = 'brightness(' + String(parseFloat((defaultPercent * 3) / 100).toFixed(1)) + ')';
-            break;
-        }
-        effectLevelPinElement.style.left = defaultPercent + '%';
-        effectLevelLineElement.style.width = defaultPercent + '%';
-        uploadLevelInputElement.value = Math.round(defaultPercent);
-      }
-    }
-    imagePreviewElement.style.filter = filterValue;
-  }
-
   uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
-  uploadControlsElement.addEventListener('change', changeFilterHandler, false);
+  uploadControlsElement.addEventListener('change', function () {
+    var newPercent = 20;
+    checkFilter(newPercent);
+    effectLevelPinElement.style.left = newPercent + '%';
+    effectLevelLineElement.style.width = newPercent + '%';
+    uploadLevelInputElement.value = Math.round(newPercent);
+  });
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
@@ -274,8 +237,9 @@
     var onMouseMove = function (moveEvent) {
       moveEvent.preventDefault();
 
-      getCoordsPin(moveEvent.clientX);
-      checkFilter();
+      // getCoordsPin(moveEvent.clientX);
+      var newPercent = getCoordsPin(moveEvent.clientX);
+      checkFilter(newPercent);
     };
 
     var onMouseUp = function (upEvent) {
