@@ -7,6 +7,11 @@
   var uploadFileElement = uploadFormElement.querySelector('#upload-file');
   var uploadCancelElement = uploadFormElement.querySelector('#upload-cancel');
   var focusUploadDescriptionElement = uploadFormElement.querySelector('.upload-form-description');
+  var uploadLevelElement = uploadFormElement.querySelector('.upload-effect-level');
+  var uploadLevelInputElement = uploadLevelElement.querySelector('.upload-effect-level-value');
+  var scopeElement = uploadLevelElement.querySelector('.upload-effect-level-line');
+  var effectLevelPinElement = uploadLevelElement.querySelector('.upload-effect-level-pin');
+  var effectLevelLineElement = uploadLevelElement.querySelector('.upload-effect-level-val');
 
   uploadFileElement.addEventListener('change', function () {
     openUploadForm();
@@ -14,7 +19,6 @@
 
   uploadCancelElement.addEventListener('click', function () {
     closeUploadForm();
-    uploadFileElement.click();
   });
 
   function uploadFormEscPressHandler(e) {
@@ -46,16 +50,60 @@
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
+  function checkFilter(newPercent) {
+    var filterElements = uploadControlsElement.querySelectorAll('input[type="radio"]');
+    for (var i = 0; i < filterElements.length; i++) {
+      if (filterElements[i].checked) {
+        var filter = filterElements[i].value;
+        var filterValue;
+
+        switch (filter) {
+          case 'none':
+            filterValue = 'none';
+            break;
+          case 'chrome':
+            filterValue = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'sepia':
+            filterValue = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'marvin':
+            filterValue = 'invert(' + String(newPercent) + '%)';
+            break;
+          case 'phobos':
+            filterValue = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
+            break;
+          case 'heat':
+            filterValue = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
+            break;
+        }
+        imagePreviewElement.style.filter = filterValue;
+        return;
+      }
+    }
+  }
+
   function addEffectImageHandler(event) {
     if (event.target.className === 'upload-effect-preview') {
       return;
     }
     var str = event.target.id;
     str = str.substring(7);
+    if (str === 'effect-none') {
+      uploadLevelElement.classList.add('hidden');
+    } else {
+      uploadLevelElement.classList.remove('hidden');
+    }
     imagePreviewElement.className = 'effect-image-preview ' + str;
+
+    var newPercent = 20;
+    checkFilter(newPercent);
+    effectLevelPinElement.style.left = newPercent + '%';
+    effectLevelLineElement.style.width = newPercent + '%';
+    uploadLevelInputElement.value = Math.round(newPercent);
   }
 
-  uploadControlsElement.addEventListener('click', addEffectImageHandler, false);
+  uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
@@ -155,5 +203,54 @@
     } else {
       uploadFormElement.submit();
     }
+  });
+
+  // начало перетаскивания ползунка
+
+  function getCoordsScope(elem) {
+    var box = elem.getBoundingClientRect();
+
+    return {
+      left: box.left,
+      right: box.right
+    };
+  }
+
+  function getCoordsPin(mouseX) {
+    // вычисляем координаты ползунка
+    var scopeEffectLevelPin = getCoordsScope(scopeElement);
+    // вычисляем новое положение ползунка
+    var newPercent = (mouseX - scopeEffectLevelPin.left) * 100 / (scopeEffectLevelPin.right - scopeEffectLevelPin.left);
+    // если движение в пределах границ, меняем положение ползунка
+    if (newPercent > 0 && newPercent < 100) {
+      effectLevelPinElement.style.left = newPercent + '%';
+      effectLevelLineElement.style.width = newPercent + '%';
+      uploadLevelInputElement.value = Math.round(newPercent);
+    }
+    return newPercent;
+  }
+
+  effectLevelPinElement.addEventListener('mousedown', function (event) {
+    event.preventDefault();
+
+    // обновлять смещение относительно первоначальной точки
+    var onMouseMove = function (moveEvent) {
+      moveEvent.preventDefault();
+
+      var newPercent = getCoordsPin(moveEvent.clientX);
+      checkFilter(newPercent);
+    };
+
+    var onMouseUp = function (upEvent) {
+      upEvent.preventDefault();
+
+      // при отпускании мыши прекратить слушать события движения мыши
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    // обработчики события передвижения мыши и отпускания кнопки мыши
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 })();
