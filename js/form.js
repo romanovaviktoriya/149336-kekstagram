@@ -52,32 +52,33 @@
 
   function checkFilter() {
     var newPercent = getCoordsPin(event.clientX);
-    var inp = uploadControlsElement.querySelectorAll('input');
+    var inputElement = uploadControlsElement.querySelectorAll('input');
+    for (var i = 0; i < inputElement.length; i++) {
+      if (inputElement[i].type === 'radio' && inputElement[i].checked) {
+        var filter = inputElement[i].value;
+        var filterValue;
 
-    for (var i = 0; i < inp.length; i++) {
-      if (inp[i].type === 'radio' && inp[i].checked) {
-        var filter = inp[i].value;
-        var znach;
         switch (filter) {
           case 'none':
-            znach = 'none';
+            filterValue = 'none';
             break;
           case 'chrome':
-            znach = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            filterValue = 'grayscale(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
             break;
           case 'sepia':
-            znach = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
+            filterValue = 'sepia(' + String(parseFloat(newPercent / 100).toFixed(2)) + ')';
             break;
           case 'marvin':
-            znach = 'invert(' + String(newPercent) + '%)';
+            filterValue = 'invert(' + String(newPercent) + '%)';
             break;
           case 'phobos':
-            znach = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
+            filterValue = 'blur(' + String(Math.round((newPercent * 3) / 100)) + 'px)';
             break;
           case 'heat':
-            znach = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
+            filterValue = 'brightness(' + String(parseFloat((newPercent * 3) / 100).toFixed(1)) + ')';
             break;
         }
+        imagePreviewElement.style.filter = filterValue;
       }
     }
   }
@@ -97,28 +98,48 @@
   }
 
   function changeFilterHandler() {
-    var inp = uploadControlsElement.querySelectorAll('input');
-    for (var i = 0; i < inp.length; i++) {
-      if (inp[i].type === 'radio' && inp[i].checked) {
-        var filter = inp[i].value;
+    var inputElement = uploadControlsElement.querySelectorAll('input');
+    for (var i = 0; i < inputElement.length; i++) {
+      if (inputElement[i].type === 'radio' && inputElement[i].checked) {
+        var filter = inputElement[i].value;
         var defaultPercent;
+        var filterValue;
 
         switch (filter) {
           case 'none':
             defaultPercent = 0;
+            filterValue = 'none';
             break;
-          default:
-            defaultPercent = 100;
+          case 'chrome':
+            defaultPercent = 20;
+            filterValue = 'grayscale(' + String(parseFloat(defaultPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'sepia':
+            defaultPercent = 20;
+            filterValue = 'sepia(' + String(parseFloat(defaultPercent / 100).toFixed(2)) + ')';
+            break;
+          case 'marvin':
+            defaultPercent = 20;
+            filterValue = 'invert(' + String(defaultPercent) + '%)';
+            break;
+          case 'phobos':
+            defaultPercent = 20;
+            filterValue = 'blur(' + String(Math.round((defaultPercent * 3) / 100)) + 'px)';
+            break;
+          case 'heat':
+            defaultPercent = 20;
+            filterValue = 'brightness(' + String(parseFloat((defaultPercent * 3) / 100).toFixed(1)) + ')';
+            break;
         }
         effectLevelPinElement.style.left = defaultPercent + '%';
         effectLevelLineElement.style.width = defaultPercent + '%';
         uploadLevelInputElement.value = Math.round(defaultPercent);
       }
     }
-    imagePreviewElement.style.filter = '';
+    imagePreviewElement.style.filter = filterValue;
   }
 
-  uploadControlsElement.addEventListener('click', addEffectImageHandler, false);
+  uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
   uploadControlsElement.addEventListener('change', changeFilterHandler, false);
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
@@ -254,8 +275,7 @@
       moveEvent.preventDefault();
 
       getCoordsPin(moveEvent.clientX);
-      var fil = checkFilter();
-      imagePreviewElement.style.filter = fil;
+      checkFilter();
     };
 
     var onMouseUp = function (upEvent) {
