@@ -51,10 +51,10 @@
   var uploadControlsElement = uploadFormElement.querySelector('.upload-effect-controls');
 
   function checkFilter(newPercent) {
-    var inputElement = uploadControlsElement.querySelectorAll('input[type="radio"]');
-    for (var i = 0; i < inputElement.length; i++) {
-      if (inputElement[i].checked) {
-        var filter = inputElement[i].value;
+    var filterElements = uploadControlsElement.querySelectorAll('input[type="radio"]');
+    for (var i = 0; i < filterElements.length; i++) {
+      if (filterElements[i].checked) {
+        var filter = filterElements[i].value;
         var filterValue;
 
         switch (filter) {
@@ -78,6 +78,7 @@
             break;
         }
         imagePreviewElement.style.filter = filterValue;
+        return;
       }
     }
   }
@@ -94,16 +95,15 @@
       uploadLevelElement.classList.remove('hidden');
     }
     imagePreviewElement.className = 'effect-image-preview ' + str;
-  }
 
-  uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
-  uploadControlsElement.addEventListener('change', function () {
     var newPercent = 20;
     checkFilter(newPercent);
     effectLevelPinElement.style.left = newPercent + '%';
     effectLevelLineElement.style.width = newPercent + '%';
     uploadLevelInputElement.value = Math.round(newPercent);
-  });
+  }
+
+  uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
   var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
@@ -237,7 +237,6 @@
     var onMouseMove = function (moveEvent) {
       moveEvent.preventDefault();
 
-      // getCoordsPin(moveEvent.clientX);
       var newPercent = getCoordsPin(moveEvent.clientX);
       checkFilter(newPercent);
     };
