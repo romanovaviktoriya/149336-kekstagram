@@ -105,32 +105,17 @@
 
   uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
-  var decrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-dec');
-  var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
-  var inputValueElement = decrementBtnElement.nextElementSibling;
+  var scaleBtnElement = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
 
-  function zoomInHandler() {
-    var transformScale;
-
-    if (inputValueElement.value < 100) {
-      inputValueElement.value = String(parseInt(inputValueElement.value, 10) + 25);
-      transformScale = 'scale(' + inputValueElement.value / 100 + ')';
-      imagePreviewElement.style['transform'] = transformScale;
-    }
+  function changeScale(scale) {
+    imagePreviewElement.style['transform'] = 'scale(' + scale / 100 + ')';
   }
 
-  function zoomOutHandler() {
-    var transformScale;
-
-    if (inputValueElement.value > 25) {
-      inputValueElement.value = String(parseInt(inputValueElement.value, 10) - 25);
-      transformScale = 'scale(' + inputValueElement.value / 100 + ')';
-      imagePreviewElement.style['transform'] = transformScale;
-    }
+  for (var i = 0; i < scaleBtnElement.length; i++) {
+    scaleBtnElement[i].addEventListener('click', function () {
+      window.initializeImageScale(event, scaleBtnElement, changeScale);
+    });
   }
-
-  decrementBtnElement.addEventListener('click', zoomOutHandler);
-  incrementBtnElement.addEventListener('click', zoomInHandler);
 
   // ------- Unique elements --------
   function unique(arr) {
