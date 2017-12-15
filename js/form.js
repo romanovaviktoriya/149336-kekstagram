@@ -105,15 +105,15 @@
 
   uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
-  var scaleBtnElement = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
+  var scaleBtnElements = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
 
   function changeScale(scale) {
     imagePreviewElement.style['transform'] = 'scale(' + scale / 100 + ')';
   }
 
-  for (var i = 0; i < scaleBtnElement.length; i++) {
-    scaleBtnElement[i].addEventListener('click', function () {
-      window.initializeImageScale(event, scaleBtnElement, changeScale);
+  for (var i = 0; i < scaleBtnElements.length; i++) {
+    scaleBtnElements[i].addEventListener('click', function (event) {
+      window.initializeImageScale(event.currentTarget, changeScale);
     });
   }
 

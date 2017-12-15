@@ -10,7 +10,6 @@
     if (inputValueElement.value < 100) {
       str = String(parseInt(inputValueElement.value, 10) + 25);
       inputValueElement.value = str;
-      return str;
     }
   }
 
@@ -18,16 +17,15 @@
     if (inputValueElement.value > 25) {
       str = String(parseInt(inputValueElement.value, 10) - 25);
       inputValueElement.value = str;
-      return str;
     }
   }
 
-  window.initializeImageScale = function (event, element, callback) {
-    if (event.currentTarget === decrementBtnElement) {
-      zoomOutHandler(element);
+  window.initializeImageScale = function (element, callback) {
+    if (element === decrementBtnElement) {
+      zoomOutHandler();
     }
-    if (event.currentTarget === incrementBtnElement) {
-      zoomInHandler(element);
+    if (element === incrementBtnElement) {
+      zoomInHandler();
     }
 
     if (typeof callback === 'function') {
