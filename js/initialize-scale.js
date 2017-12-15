@@ -6,14 +6,14 @@
   var incrementBtnElement = uploadFormElement.querySelector('.upload-resize-controls-button-inc');
   var str;
 
-  function zoomInHandler() {
+  function zoomIn() {
     if (inputValueElement.value < 100) {
       str = String(parseInt(inputValueElement.value, 10) + 25);
       inputValueElement.value = str;
     }
   }
 
-  function zoomOutHandler() {
+  function zoomOut() {
     if (inputValueElement.value > 25) {
       str = String(parseInt(inputValueElement.value, 10) - 25);
       inputValueElement.value = str;
@@ -22,10 +22,10 @@
 
   window.initializeImageScale = function (element, callback) {
     if (element === decrementBtnElement) {
-      zoomOutHandler();
+      zoomOut();
     }
     if (element === incrementBtnElement) {
-      zoomInHandler();
+      zoomIn();
     }
 
     if (typeof callback === 'function') {
