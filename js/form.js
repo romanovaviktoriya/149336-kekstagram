@@ -174,6 +174,29 @@
     parentElement.insertBefore(messageElement, uploadHashtagsElement);
   }
 
+  function resetForm() {
+    uploadFormElement.reset();
+    window.str = 100;
+    imagePreviewElement.className = 'effect-image-preview';
+    imagePreviewElement.style['transform'] = '';
+    imagePreviewElement.style.filter = '';
+    effectLevelPinElement.style.left = '20%';
+    effectLevelLineElement.style.width = '20%';
+    uploadLevelElement.classList.add('hidden');
+    var message = document.querySelector('.alert-danger');
+    if (message) {
+      message.parentNode.removeChild(message);
+    }
+  }
+
+  function submitForm(event) {
+    window.backend.save(new FormData(uploadFormElement), function () {
+      uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
+      resetForm();
+    }, window.errorRenderPhotoHandler);
+    event.preventDefault();
+  }
+
   submitBtnElement.addEventListener('click', function (event) {
     event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
@@ -181,12 +204,12 @@
       var validationResult = validateHashTags(str);
       if (validationResult === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
-        uploadFormElement.submit();
+        submitForm(event);
       } else {
         showMessageDanger(validationResult);
       }
     } else {
-      uploadFormElement.submit();
+      submitForm(event);
     }
   });
 

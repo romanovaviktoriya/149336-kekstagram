@@ -5,7 +5,7 @@
   window.renderPhoto = function (object) {
     var pictureElement = templateElement.cloneNode(true);
 
-    pictureElement.querySelector('img').src = object.src;
+    pictureElement.querySelector('img').src = object.url;
     pictureElement.querySelector('.picture-likes').textContent = object.likes;
     pictureElement.querySelector('.picture-comments').textContent = object.comments.length;
 
