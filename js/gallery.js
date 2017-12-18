@@ -6,7 +6,7 @@
   var pictureListElement = document.querySelector('.pictures');
   var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
 
-  window.successRenderPhotoHandler = function (picturesArray) {
+  function successRenderPhotoHandler(picturesArray) {
     var fragment = document.createDocumentFragment();
     window.picturesArray = picturesArray;
     for (var j = 0; j < picturesArray.length; j++) {
@@ -18,18 +18,20 @@
     for (var z = 0; z <= slidersOpenElement.length - 1; z++) {
       slidersOpenElement[z].addEventListener('click', openPhotoHandler, true);
     }
-  };
+  }
 
   window.errorRenderPhotoHandler = function (errorMessage) {
-    var whereInsertFragmentElement = document.querySelector('.overlay.setup');
-    var messageError = document.createElement('div');
-    messageError.className = 'alert-danger';
-    messageError.innerHTML = errorMessage;
-    messageError.style = 'display:block;margin:0 auto;padding:10px;text-align:center; background-color:#ee4830;color:#ffffff';
-    whereInsertFragmentElement.prepend(messageError);
+    if (errorMessage) {
+      var whereInsertFragmentElement = document.querySelector('body');
+      var messageError = document.createElement('div');
+      messageError.className = 'alert-danger';
+      messageError.innerHTML = errorMessage;
+      messageError.style = 'position:fixed;top:10px;left:50%;transform:translate(-50%);z-index:2;width:582px;display:block;margin:0 auto;padding:10px;text-align:center; background-color:#ee4830;color:#ffffff';
+      whereInsertFragmentElement.prepend(messageError);
+    }
   };
 
-  window.backend.load(window.successRenderPhotoHandler, window.errorRenderPhotoHandler);
+  window.backend.load(successRenderPhotoHandler, window.errorRenderPhotoHandler);
 
   function sliderEscPressHandler(e) {
     if (e.keyCode === ESC_KEYCODE) {
