@@ -6,7 +6,7 @@
     for (var i = 0; i < pictures.length; i++) {
       var str = object.src;
       var reg = pictures[i];
-      var result = str.match(reg.src);
+      var result = str.match(reg.url);
       if (result) {
         return [pictures[i].comments.length, pictures[i].likes];
       }
