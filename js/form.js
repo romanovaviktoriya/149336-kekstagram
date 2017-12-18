@@ -12,6 +12,8 @@
   var scopeElement = uploadLevelElement.querySelector('.upload-effect-level-line');
   var effectLevelPinElement = uploadLevelElement.querySelector('.upload-effect-level-pin');
   var effectLevelLineElement = uploadLevelElement.querySelector('.upload-effect-level-val');
+  var scaleBtnElements = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
+  var inputValueElement = uploadFormElement.querySelectorAll('.upload-resize-controls-value');
 
   uploadFileElement.addEventListener('change', function () {
     openUploadForm();
@@ -105,8 +107,6 @@
 
   uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
-  var scaleBtnElements = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
-
   function changeScale(scale) {
     imagePreviewElement.style['transform'] = 'scale(' + scale / 100 + ')';
   }
@@ -176,7 +176,7 @@
 
   function resetForm() {
     uploadFormElement.reset();
-    window.str = 100;
+    inputValueElement.value = 100;
     imagePreviewElement.className = 'effect-image-preview';
     imagePreviewElement.style['transform'] = '';
     imagePreviewElement.style.filter = '';
