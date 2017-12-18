@@ -20,7 +20,7 @@
       onError('Превышение времени выполнения запроса (' + xhr.timeout + 'мс).');
     });
 
-    xhr.timeout = 3;
+    xhr.timeout = 3000;
 
     return xhr;
   };
