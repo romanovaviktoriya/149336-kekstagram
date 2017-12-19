@@ -12,6 +12,8 @@
   var scopeElement = uploadLevelElement.querySelector('.upload-effect-level-line');
   var effectLevelPinElement = uploadLevelElement.querySelector('.upload-effect-level-pin');
   var effectLevelLineElement = uploadLevelElement.querySelector('.upload-effect-level-val');
+  var scaleBtnElements = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
+  var inputValueElement = uploadFormElement.querySelectorAll('.upload-resize-controls-value');
 
   uploadFileElement.addEventListener('change', function () {
     openUploadForm();
@@ -105,8 +107,6 @@
 
   uploadControlsElement.addEventListener('change', addEffectImageHandler, false);
 
-  var scaleBtnElements = uploadFormElement.querySelectorAll('.upload-resize-controls-button');
-
   function changeScale(scale) {
     imagePreviewElement.style['transform'] = 'scale(' + scale / 100 + ')';
   }
@@ -174,6 +174,29 @@
     parentElement.insertBefore(messageElement, uploadHashtagsElement);
   }
 
+  function resetForm() {
+    uploadFormElement.reset();
+    inputValueElement.value = 100;
+    imagePreviewElement.className = 'effect-image-preview';
+    imagePreviewElement.style['transform'] = '';
+    imagePreviewElement.style.filter = '';
+    effectLevelPinElement.style.left = '20%';
+    effectLevelLineElement.style.width = '20%';
+    uploadLevelElement.classList.add('hidden');
+    var messageElement = document.querySelector('.alert-danger');
+    if (messageElement) {
+      messageElement.parentNode.removeChild(messageElement);
+    }
+  }
+
+  function submitForm(event) {
+    window.backend.save(new FormData(uploadFormElement), function () {
+      uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
+      resetForm();
+    }, window.errorRenderPhotoHandler);
+    event.preventDefault();
+  }
+
   submitBtnElement.addEventListener('click', function (event) {
     event.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
@@ -181,12 +204,12 @@
       var validationResult = validateHashTags(str);
       if (validationResult === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
-        uploadFormElement.submit();
+        submitForm(event);
       } else {
         showMessageDanger(validationResult);
       }
     } else {
-      uploadFormElement.submit();
+      submitForm(event);
     }
   });
 
