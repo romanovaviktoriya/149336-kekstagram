@@ -183,9 +183,9 @@
     effectLevelPinElement.style.left = '20%';
     effectLevelLineElement.style.width = '20%';
     uploadLevelElement.classList.add('hidden');
-    var message = document.querySelector('.alert-danger');
-    if (message) {
-      message.parentNode.removeChild(message);
+    var messageElement = document.querySelector('.alert-danger');
+    if (messageElement) {
+      messageElement.parentNode.removeChild(messageElement);
     }
   }
 
