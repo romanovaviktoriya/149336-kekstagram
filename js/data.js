@@ -10,26 +10,27 @@
   ];
   var PICTURES_COUNT = 25;
 
-  function getRandomInteger(min, max) {
+  window.getRandomInteger = function (min, max) {
     var rand = min + Math.random() * (max + 1 - min);
     rand = Math.floor(rand);
     return rand;
-  }
+  };
+
   function getUrlImage(i) {
     return 'photos/' + (i + 1) + '.jpg';
   }
   function getCountLikes() {
-    return getRandomInteger(15, 200);
+    return window.getRandomInteger(15, 200);
   }
   function generateComments() {
     var text;
     var comments = [];
-    var randomCount = getRandomInteger(1, 10);
+    var randomCount = window.getRandomInteger(1, 10);
 
     for (var i = 0; i < randomCount; i++) {
       text = '';
-      for (var j = 0; j < getRandomInteger(1, 2); j++) {
-        var indexComment = getRandomInteger(0, 5);
+      for (var j = 0; j < window.getRandomInteger(1, 2); j++) {
+        var indexComment = window.getRandomInteger(0, 5);
         text += COMMENTS[indexComment] + ' ';
       }
       comments.push(text);
