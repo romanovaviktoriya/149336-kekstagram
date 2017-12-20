@@ -34,7 +34,19 @@
     document.addEventListener('keydown', uploadFormEscPressHandler);
   }
 
+  function errorHiddenHandler() {
+    if (window.messageErrorElement) {
+      document.querySelector('body').removeChild(window.messageErrorElement);
+    }
+    document.removeEventListener('click', errorHiddenHandler);
+  }
+
+  document.addEventListener('click', errorHiddenHandler);
+
   function closeUploadForm() {
+    if (window.messageErrorElement) {
+      document.querySelector('body').removeChild(window.messageErrorElement);
+    }
     if (focusUploadDescriptionElement === document.activeElement) {
       event.preventDefault();
     } else {
@@ -214,7 +226,6 @@
   });
 
   // начало перетаскивания ползунка
-
   function getCoordsScope(elem) {
     var box = elem.getBoundingClientRect();
 

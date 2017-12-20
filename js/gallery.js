@@ -23,11 +23,11 @@
   window.errorRenderPhotoHandler = function (errorMessage) {
     if (errorMessage) {
       var whereInsertFragmentElement = document.querySelector('body');
-      var messageError = document.createElement('div');
-      messageError.className = 'alert-danger';
-      messageError.innerHTML = errorMessage;
-      messageError.style = 'position:fixed;top:10px;left:50%;transform:translate(-50%);z-index:2;width:582px;display:block;margin:0 auto;padding:10px;text-align:center; background-color:#ee4830;color:#ffffff';
-      whereInsertFragmentElement.prepend(messageError);
+      window.messageErrorElement = document.createElement('div');
+      window.messageErrorElement.className = 'alert-danger';
+      window.messageErrorElement.innerHTML = errorMessage;
+      window.messageErrorElement.style = 'position:fixed;top:10px;left:50%;transform:translate(-50%);z-index:3;width:582px;display:block;margin:0 auto;padding:10px;text-align:center; background-color:#ee4830;color:#ffffff';
+      whereInsertFragmentElement.prepend(window.messageErrorElement);
     }
   };
 
