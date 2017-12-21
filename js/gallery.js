@@ -7,7 +7,7 @@
   var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
 
   function sortFilterLikes(picturesArray) {
-    var sortedArray = picturesArray.slice();
+    var sortedArray = picturesArray;
     sortedArray.sort(function (first, second) {
       return second.likes - first.likes;
     });
@@ -15,7 +15,7 @@
   }
 
   function sortFilterComments(picturesArray) {
-    var sortedArray = picturesArray.slice();
+    var sortedArray = picturesArray;
     sortedArray.sort(function (first, second) {
       return second.comments.length - first.comments.length;
     });
@@ -23,7 +23,7 @@
   }
 
   function sortFilterRandomize(picturesArray) {
-    var sortedArray = picturesArray.slice();
+    var sortedArray = picturesArray;
     sortedArray.sort(function () {
       return Math.random() - 0.5;
     });
