@@ -6,24 +6,24 @@
   var pictureListElement = document.querySelector('.pictures');
   var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
 
-  function sortFilterLikes(picturesArray) {
-    var sortedArray = picturesArray;
+  function sortFilterLikes(pictures) {
+    var sortedArray = pictures;
     sortedArray.sort(function (first, second) {
       return second.likes - first.likes;
     });
     return sortedArray;
   }
 
-  function sortFilterComments(picturesArray) {
-    var sortedArray = picturesArray;
+  function sortFilterComments(pictures) {
+    var sortedArray = pictures;
     sortedArray.sort(function (first, second) {
       return second.comments.length - first.comments.length;
     });
     return sortedArray;
   }
 
-  function sortFilterRandomize(picturesArray) {
-    var sortedArray = picturesArray;
+  function sortFilterRandomize(pictures) {
+    var sortedArray = pictures;
     sortedArray.sort(function () {
       return Math.random() - 0.5;
     });
@@ -32,7 +32,7 @@
 
   var filterFormElement = document.querySelector('.filters');
 
-  function changeFilterSort(picturesArray) {
+  function changeFilterSort(pictures) {
     var filterSortElements = document.querySelectorAll('.filters input[type="radio"]');
     for (var i = 0; i < filterSortElements.length; i++) {
       if (filterSortElements[i].checked) {
@@ -41,16 +41,16 @@
 
         switch (filter) {
           case 'recommend':
-            filterSort = picturesArray;
+            filterSort = pictures;
             break;
           case 'popular':
-            filterSort = sortFilterLikes(picturesArray);
+            filterSort = sortFilterLikes(pictures);
             break;
           case 'discussed':
-            filterSort = sortFilterComments(picturesArray);
+            filterSort = sortFilterComments(pictures);
             break;
           case 'random':
-            filterSort = sortFilterRandomize(picturesArray);
+            filterSort = sortFilterRandomize(pictures);
             break;
         }
         break;
@@ -59,23 +59,27 @@
     return filterSort;
   }
 
+  var slidersOpenElement = document.querySelectorAll('.picture');
+
   function updatePictures() {
+    for (var l = 0; l <= slidersOpenElement.length - 1; l++) {
+      slidersOpenElement[k].removeEventListener('click', openPhotoHandler);
+    }
     pictureListElement.innerHTML = '';
-    var picturesArray = window.picturesArray.slice();
-    var pictures = changeFilterSort(picturesArray);
+    var pictures = changeFilterSort(window.pictures.slice());
     var fragment = document.createDocumentFragment();
     for (var j = 0; j < pictures.length; j++) {
       fragment.appendChild(window.renderPhoto(pictures[j]));
     }
     pictureListElement.appendChild(fragment);
-    var slidersOpenElement = document.querySelectorAll('.picture');
+
     for (var k = 0; k <= slidersOpenElement.length - 1; k++) {
       slidersOpenElement[k].addEventListener('click', openPhotoHandler, true);
     }
   }
 
-  function successRenderPhotoHandler(picturesArray) {
-    window.picturesArray = picturesArray; // первоначальный массив картинок
+  function successRenderPhotoHandler(pictures) {
+    window.pictures = pictures; // первоначальный массив картинок
     filterFormElement.classList.remove('filters-inactive');
     updatePictures();
   }
@@ -118,7 +122,7 @@
   function openPhotoHandler(evt) {
     evt.preventDefault();
     var el = evt.currentTarget.children[0];
-    window.renderMainPhoto(el, window.picturesArray);
+    window.renderMainPhoto(el, window.pictures);
     openSlider();
   }
 
