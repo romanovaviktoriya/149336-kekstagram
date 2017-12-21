@@ -45,20 +45,21 @@
 
   document.addEventListener('click', hideErrorHandler);
 
-  function closeUploadForm(evt) {
+  function closeUploadForm() {
     if (messageErrorElement) {
       document.querySelector('body').removeChild(messageErrorElement);
     }
     if (focusUploadDescriptionElement === document.activeElement) {
-      evt.preventDefault();
+      return;
     } else {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
+      resetForm();
       document.removeEventListener('keydown', uploadFormEscPressHandler);
     }
   }
 
-  uploadCancelElement.addEventListener('keydown', function (e) {
-    if (e.keyCode === ENTER_KEYCODE) {
+  uploadCancelElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
       closeUploadForm();
     }
   });
@@ -145,24 +146,24 @@
 
   function validateHashTags(str) {
     // проверяем количество
-    var hashArr = str.split(' ');
-    if (hashArr.length > 5) {
+    var hashTags = str.split(' ');
+    if (hashTags.length > 5) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
       return 'Хэштегов больше 5';
     }
 
     // проверяем чтобы начинался с решетки и имел не более 20 символов
     var regexp = /(#[А-Яа-яЁёA-Za-z]{1,20}$)/gi;
-    for (var m = 0; m < hashArr.length; m++) {
-      if (hashArr[m].match(regexp) === null) {
+    for (var t = 0; t < hashTags.length; t++) {
+      if (hashTags[t].match(regexp) === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
-        return 'Хэштег ' + hashArr[m] + ' невалиден';
+        return 'Хэштег ' + hashTags[t] + ' невалиден';
       }
     }
 
     // проверяем, чтобы массив уникальных тегов по длине соответствовал массиву с исходными тегами
     var uniqueTags = unique(str.toLowerCase().split(' '));
-    if (uniqueTags.length !== hashArr.length) {
+    if (uniqueTags.length !== hashTags.length) {
       uploadFormElement.querySelector('.upload-form-hashtags').classList.add('error');
       return 'Среди хэштегов есть дубликаты';
     }
@@ -203,13 +204,12 @@
     }
   }
 
-  function submitForm(evt) {
+  function submitForm() {
     hideErrorHandler();
     window.backend.save(new FormData(uploadFormElement), function () {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
       resetForm();
     }, window.errorRenderPhotoHandler);
-    evt.preventDefault();
   }
 
   submitBtnElement.addEventListener('click', function (evt) {
