@@ -23,8 +23,8 @@
     closeUploadForm();
   });
 
-  function uploadFormEscPressHandler(e) {
-    if (e.keyCode === ESC_KEYCODE) {
+  function uploadFormEscPressHandler(evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
       closeUploadForm();
     }
   }
@@ -34,9 +34,23 @@
     document.addEventListener('keydown', uploadFormEscPressHandler);
   }
 
-  function closeUploadForm() {
+  var messageErrorElement = document.querySelector('.alert-danger');
+
+  function hideErrorHandler() {
+    if (messageErrorElement) {
+      document.querySelector('body').removeChild(messageErrorElement);
+    }
+    document.removeEventListener('click', hideErrorHandler);
+  }
+
+  document.addEventListener('click', hideErrorHandler);
+
+  function closeUploadForm(evt) {
+    if (messageErrorElement) {
+      document.querySelector('body').removeChild(messageErrorElement);
+    }
     if (focusUploadDescriptionElement === document.activeElement) {
-      event.preventDefault();
+      evt.preventDefault();
     } else {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
       document.removeEventListener('keydown', uploadFormEscPressHandler);
@@ -85,11 +99,11 @@
     }
   }
 
-  function addEffectImageHandler(event) {
-    if (event.target.className === 'upload-effect-preview') {
+  function addEffectImageHandler(evt) {
+    if (evt.target.className === 'upload-effect-preview') {
       return;
     }
-    var str = event.target.id;
+    var str = evt.target.id;
     str = str.substring(7);
     if (str === 'effect-none') {
       uploadLevelElement.classList.add('hidden');
@@ -112,8 +126,8 @@
   }
 
   for (var i = 0; i < scaleBtnElements.length; i++) {
-    scaleBtnElements[i].addEventListener('click', function (event) {
-      window.initializeImageScale(event.currentTarget, changeScale);
+    scaleBtnElements[i].addEventListener('click', function (evt) {
+      window.initializeImageScale(evt.currentTarget, changeScale);
     });
   }
 
@@ -189,32 +203,32 @@
     }
   }
 
-  function submitForm(event) {
+  function submitForm(evt) {
+    hideErrorHandler();
     window.backend.save(new FormData(uploadFormElement), function () {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
       resetForm();
     }, window.errorRenderPhotoHandler);
-    event.preventDefault();
+    evt.preventDefault();
   }
 
-  submitBtnElement.addEventListener('click', function (event) {
-    event.preventDefault();
+  submitBtnElement.addEventListener('click', function (evt) {
+    evt.preventDefault();
     var str = uploadFormElement.querySelector('.upload-form-hashtags').value;
     if (str !== '') {
       var validationResult = validateHashTags(str);
       if (validationResult === null) {
         uploadFormElement.querySelector('.upload-form-hashtags').classList.remove('error');
-        submitForm(event);
+        submitForm(evt);
       } else {
         showMessageDanger(validationResult);
       }
     } else {
-      submitForm(event);
+      submitForm(evt);
     }
   });
 
   // начало перетаскивания ползунка
-
   function getCoordsScope(elem) {
     var box = elem.getBoundingClientRect();
 
@@ -238,8 +252,8 @@
     return newPercent;
   }
 
-  effectLevelPinElement.addEventListener('mousedown', function (event) {
-    event.preventDefault();
+  effectLevelPinElement.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
     // обновлять смещение относительно первоначальной точки
     var onMouseMove = function (moveEvent) {
