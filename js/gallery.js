@@ -53,6 +53,7 @@
             filterSort = sortFilterRandomize(picturesArray);
             break;
         }
+        break;
       }
     }
     return filterSort;
@@ -67,10 +68,6 @@
     }
     pictureListElement.appendChild(fragment);
   }
-
-  window.pictures.onFilterChange = function () {
-    window.debounce(updatePictures);
-  };
 
   function successRenderPhotoHandler(picturesArray) {
     window.picturesArray = picturesArray; // первоначальный массив картинок
@@ -96,6 +93,7 @@
   };
 
   filterFormElement.addEventListener('change', function () {
+    window.debounce(updatePictures(window.picturesArray));
     successRenderPhotoHandler(window.picturesArray);
   });
 

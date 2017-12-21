@@ -204,6 +204,7 @@
   }
 
   function submitForm(evt) {
+    hideErrorHandler();
     window.backend.save(new FormData(uploadFormElement), function () {
       uploadFormElement.querySelector('.upload-overlay').classList.add('hidden');
       resetForm();
