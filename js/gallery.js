@@ -59,26 +59,25 @@
     return filterSort;
   }
 
-  function updatePictures(picturesArray) {
+  function updatePictures() {
     pictureListElement.innerHTML = '';
+    var picturesArray = window.picturesArray.slice();
     var pictures = changeFilterSort(picturesArray);
     var fragment = document.createDocumentFragment();
     for (var j = 0; j < pictures.length; j++) {
       fragment.appendChild(window.renderPhoto(pictures[j]));
     }
     pictureListElement.appendChild(fragment);
+    var slidersOpenElement = document.querySelectorAll('.picture');
+    for (var k = 0; k <= slidersOpenElement.length - 1; k++) {
+      slidersOpenElement[k].addEventListener('click', openPhotoHandler, true);
+    }
   }
 
   function successRenderPhotoHandler(picturesArray) {
     window.picturesArray = picturesArray; // первоначальный массив картинок
     filterFormElement.classList.remove('filters-inactive');
-
-    updatePictures(picturesArray);
-
-    var slidersOpenElement = document.querySelectorAll('.picture');
-    for (var k = 0; k <= slidersOpenElement.length - 1; k++) {
-      slidersOpenElement[k].addEventListener('click', openPhotoHandler, true);
-    }
+    updatePictures();
   }
 
   window.errorRenderPhotoHandler = function (errorMessage) {
@@ -93,8 +92,7 @@
   };
 
   filterFormElement.addEventListener('change', function () {
-    window.debounce(updatePictures(window.picturesArray));
-    successRenderPhotoHandler(window.picturesArray);
+    window.debounce(updatePictures);
   });
 
   window.backend.load(successRenderPhotoHandler, window.errorRenderPhotoHandler);
