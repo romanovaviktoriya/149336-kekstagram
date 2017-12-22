@@ -1,7 +1,5 @@
 'use strict';
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
   var galleryOverlayElement = document.querySelector('.gallery-overlay');
   var pictureListElement = document.querySelector('.pictures');
   var sliderCloseElement = galleryOverlayElement.querySelector('.gallery-overlay-close');
@@ -59,19 +57,27 @@
     return filterSort;
   }
 
-  function updatePictures() {
-    var slidersOpenElement = document.querySelectorAll('.picture');
+  var slidersOpenElement = document.querySelectorAll('.picture');
+
+  function cleanOldPictures() {
     for (var l = 0; l <= slidersOpenElement.length - 1; l++) {
       slidersOpenElement[l].removeEventListener('click', openPhotoHandler);
     }
     pictureListElement.innerHTML = '';
+  }
+
+  function insertingNewPictures() {
     var pictures = changeFilterSort(window.pictures.slice());
     var fragment = document.createDocumentFragment();
     for (var j = 0; j < pictures.length; j++) {
       fragment.appendChild(window.renderPhoto(pictures[j]));
     }
     pictureListElement.appendChild(fragment);
+  }
 
+  function updatePictures() {
+    cleanOldPictures();
+    insertingNewPictures();
     slidersOpenElement = document.querySelectorAll('.picture');
     for (var k = 0; k <= slidersOpenElement.length - 1; k++) {
       slidersOpenElement[k].addEventListener('click', openPhotoHandler, true);
@@ -91,7 +97,7 @@
       messageErrorElement.className = 'alert-danger';
       messageErrorElement.innerHTML = errorMessage;
       messageErrorElement.style = 'position:fixed;top:10px;left:50%;transform:translate(-50%);z-index:3;width:582px;display:block;margin:0 auto;padding:10px;text-align:center; background-color:#ee4830;color:#ffffff';
-      whereInsertFragmentElement.prepend(messageErrorElement);
+      whereInsertFragmentElement.insertBefore(messageErrorElement, filterFormElement);
     }
   };
 
@@ -102,9 +108,7 @@
   window.backend.load(successRenderPhotoHandler, window.errorRenderPhotoHandler);
 
   function sliderEscPressHandler(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closeSlider();
-    }
+    window.util.isEscEvent(evt, closeSlider);
   }
 
   function openSlider() {
@@ -131,8 +135,6 @@
   });
 
   sliderCloseElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      closeSlider();
-    }
+    window.util.isEnterEvent(evt, closeSlider);
   });
 })();
