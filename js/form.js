@@ -1,8 +1,5 @@
 'use strict';
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
-
   var uploadFormElement = document.querySelector('#upload-select-image');
   var uploadFileElement = uploadFormElement.querySelector('#upload-file');
   var uploadCancelElement = uploadFormElement.querySelector('#upload-cancel');
@@ -24,9 +21,7 @@
   });
 
   function uploadFormEscPressHandler(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closeUploadForm();
-    }
+    window.util.isEscEvent(evt, closeUploadForm);
   }
 
   function openUploadForm() {
@@ -59,9 +54,7 @@
   }
 
   uploadCancelElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      closeUploadForm();
-    }
+    window.util.isEnterEvent(evt, closeUploadForm);
   });
 
   var imagePreviewElement = uploadFormElement.querySelector('.effect-image-preview');
@@ -185,7 +178,7 @@
     var messageElement = document.createElement('div');
 
     messageElement.className = 'alert-danger';
-    messageElement.innerHTML = validationResult;
+    messageElement.textContent = validationResult;
     parentElement.insertBefore(messageElement, uploadHashtagsElement);
   }
 
